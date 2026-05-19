@@ -8,9 +8,11 @@ const server = new ApolloServer({
     resolvers,
 });
 
+const port = process.env.PORT || 4000;
+
 async function startServer() {
     const { url } = await startStandaloneServer(server, {
-        listen: { port: 4000 },
+        listen: { port },
     });
 
     console.log(`Your API is running at: ${url}`);

@@ -3,9 +3,7 @@ FROM node:24-alpine
 WORKDIR /app
 
 COPY package*.json ./
-#RUN npm ci
-RUN ls -la
-RUN npm install
+RUN npm ci
 
 COPY . .
 

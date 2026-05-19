@@ -1,5 +1,14 @@
 # ResolveIQ Frontend
 
+## Getting up and running locally
+
+Clone the repo to your local machine.
+change to the resolveiq/server directory
+make sure you have docker desktop running locally.
+run :  dockerbuild -t resolveiq-api .
+run : docker run --rm -p 400:4000 resolveiq-api
+that should run a local instance ot the api browse to it / play around http://localhost:4000/
+
 > Investigation-first exception handling for missed loyalty earnings.
 
 ResolveIQ is a workflow-driven review tool that helps loyalty support teams investigate missed-points cases, understand account status, authorize transaction reprocessing, and track cases through to resolution.

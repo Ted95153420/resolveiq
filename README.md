@@ -9,6 +9,8 @@ run :  dockerbuild -t resolveiq-api .
 run : docker run --rm -p 400:4000 resolveiq-api
 that should run a local instance ot the api browse to it / play around http://localhost:4000/
 
+If you would like to see/experiment with the  the latest deployed API, then it is at https://resolveiq-t6iy.onrender.com/
+
 > Investigation-first exception handling for missed loyalty earnings.
 
 ResolveIQ is a workflow-driven review tool that helps loyalty support teams investigate missed-points cases, understand account status, authorize transaction reprocessing, and track cases through to resolution.

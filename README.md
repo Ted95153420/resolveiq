@@ -2,12 +2,17 @@
 
 ## Getting up and running locally
 
-Clone the repo to your local machine.
-change to the resolveiq/server directory
-make sure you have docker desktop running locally.
-run :  dockerbuild -t resolveiq-api .
-run : docker run --rm -p 400:4000 resolveiq-api
-that should run a local instance ot the api browse to it / play around http://localhost:4000/
+Clone the repo to your local machine.   
+change to the resolveiq/server directory   
+make sure you have docker desktop running locally.   
+run :  dockerbuild -t resolveiq-api .   
+run : docker run -p 4000:4000  --name resolveiq-api-container resolveiq-api   
+that should run a local instance ot the api browse to it / play around http://localhost:4000/   
+  
+For the UI open git hub   
+navigate to resolveiq/client/userfrontend   
+run npm run dev   
+  
 
 If you would like to see/experiment with the  the latest deployed API, then it is at https://resolveiq-t6iy.onrender.com/
 

@@ -1,4 +1,6 @@
 # ResolveIQ Frontend
+The Deployed API is at https://resolveiq-t6iy.onrender.com/  
+The Deployed UI is at https://resolveiq-ui.onrender.com  
 
 ## Getting up and running locally
 
@@ -35,7 +37,6 @@ type npm start
 the consumer should pick up this message and display it in the gitbash window it is running in.
   
 
-If you would like to see/experiment with the  the latest deployed API, then it is at https://resolveiq-t6iy.onrender.com/
 
 > Investigation-first exception handling for missed loyalty earnings.
 

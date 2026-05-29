@@ -9,9 +9,11 @@ run :  dockerbuild -t resolveiq-api .
 run : docker run -p 4000:4000  --name resolveiq-api-container resolveiq-api   
 that should run a local instance ot the api browse to it / play around http://localhost:4000/   
   
-For the UI open git hub   
-navigate to resolveiq/client/userfrontend   
-run npm run dev   
+For the UI open git hub     
+navigate to resolveiq/client/userfrontend  
+run : docker build -t resolveiq-ui .  
+run : docker run -p 8080:80 --name resolveiq-ui-container resolveiq-ui  
+once the UI container is running, it should he accessible on localhost:8080
   
 
 If you would like to see/experiment with the  the latest deployed API, then it is at https://resolveiq-t6iy.onrender.com/

@@ -7,7 +7,9 @@ import DisplayData from './RetrieveUserData';
 function App() { 
     const client = new ApolloClient({
         cache: new InMemoryCache(),
-        link: new HttpLink({ uri: "http://localhost:4000/graphql" })
+        link: new HttpLink({
+            uri: import.meta.env.VITE_GRAPHQL_API_URL || "http://localhost:4000/graphql"
+        })
     });
 
   

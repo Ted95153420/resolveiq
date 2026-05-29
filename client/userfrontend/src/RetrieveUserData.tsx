@@ -7,7 +7,7 @@ const QUERY_ALL_USERS = gql`
             name
             age
             nationality
-            username
+            loyaltypointbalance
   }
 }`;
 
@@ -16,6 +16,7 @@ type User = {
     age: number;
     nationality: string;
     username: string;
+    loyaltypointbalance: number;
 };
 
 type GetAllUsersData = {
@@ -36,8 +37,8 @@ function DisplayData() {
                         <div key={user.username}>
                             <h2>Name: {user.name}</h2>
                             <h3>Age: {user.age}</h3>
-                            <h3>Username: {user.username}</h3>
                             <h3>Nationality: {user.nationality}</h3>
+                            <h3>Loyalty Balance: {user.loyaltypointbalance}</h3>
                         </div>
                     );
                 })}

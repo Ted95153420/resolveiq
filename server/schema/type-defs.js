@@ -7,6 +7,7 @@ const typeDefs = `#graphql
       nationality: Nationality!
       friends: [User]
       favouriteMovies:[Movie]
+      loyaltypointbalance:Int!
   }
 
   type Query {

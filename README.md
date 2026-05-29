@@ -3,17 +3,36 @@
 ## Getting up and running locally
 
 Clone the repo to your local machine.   
+
+TO RUN THE API LOCALLY
 change to the resolveiq/server directory   
 make sure you have docker desktop running locally.   
 run :  dockerbuild -t resolveiq-api .   
 run : docker run -p 4000:4000  --name resolveiq-api-container resolveiq-api   
 that should run a local instance ot the api browse to it / play around http://localhost:4000/   
   
-For the UI open git hub     
+TO RUN THE UI LOCALLY  
 navigate to resolveiq/client/userfrontend  
 run : docker build -t resolveiq-ui .  
 run : docker run -p 8080:80 --name resolveiq-ui-container resolveiq-ui  
 once the UI container is running, it should he accessible on localhost:8080
+
+TO RUN MESSAGING SYSTEM LOCALLY
+Start up redpandadata (think simple local Kafka)  
+Ensure Docker Desktop is running locally  
+navigate to resolveiq/streaming  
+type docker compose up -d  
+
+Now start the consumer  
+navigate to resolveiq/streaming/consumer  
+ensure said folder contains a '.env' file, the contents of which need to be 'KAFKA_BROKER=localhost:9092'  
+type 'npm start'  
+
+Now start the producer ( the code that creates a user.created event)
+navigate to resolveiq/streaming/producer  
+ensure said folder contains a '.env' file, the contents of which need to be 'KAFKA_BROKER=localhost:9092'
+type npm start  
+the consumer should pick up this message and display it in the gitbash window it is running in.
   
 
 If you would like to see/experiment with the  the latest deployed API, then it is at https://resolveiq-t6iy.onrender.com/

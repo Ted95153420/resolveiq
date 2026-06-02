@@ -1,5 +1,5 @@
 const { createUser } = require("../services/userService");
-const { UserList } = require("../FakeUserData");
+const { getUsers } = require("../repositories/userRepository");
 const { MovieList } = require("../FakeMovieData");
 const _ = require("lodash");
 
@@ -7,12 +7,12 @@ const resolvers = {
     Query: {
         //USER RESOLVERS
         users: () => {
-            return UserList
+            return getUsers();
         },
 
         user:(parent, args) => {
             const id = args.id;
-            const user = _.find(UserList, { id: Number(id) })
+            const user = _.find(getUsers(), { id: Number(id) })
             return user;
         
         },
@@ -45,8 +45,10 @@ const resolvers = {
 
         updateUserName: (parent, args) => {
             const { id, newUserName } = args.input;
+            const users = getUsers();
+
             let userUpdated;
-            UserList.forEach((user) => {
+            users.forEach((user) => {
                 if (user.id == Number(id)) {
                     user.username = newUserName;
                     userUpdated = user
@@ -57,7 +59,9 @@ const resolvers = {
 
         deleteUser: (parent, args) => {
             const id = args.id;
-            _.remove(UserList, (user) => user.id === Number(id));
+            const users = getUsers();
+
+            _.remove(users, (user) => user.id === Number(id));
             return null;
         }
     },

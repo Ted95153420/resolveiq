@@ -7,6 +7,7 @@ const QUERY_ALL_USERS = gql`
             name
             age
             nationality
+            username
             loyaltypointbalance
   }
 }`;
@@ -24,11 +25,17 @@ type GetAllUsersData = {
 };
 
 function DisplayData() {
-    const { data } = useQuery<GetAllUsersData>(QUERY_ALL_USERS);
+
+    const { data, loading, error } = useQuery<GetAllUsersData>(QUERY_ALL_USERS , {
+        pollInterval: 3000,
+    });
 
     if (data) {
-        console.log(data)
+        console.log(data);
     }
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error loading users.</div>;
 
     return (
         <div>

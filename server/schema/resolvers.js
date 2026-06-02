@@ -1,3 +1,4 @@
+const { createUser } = require("../services/userService");
 const { UserList } = require("../FakeUserData");
 const { MovieList } = require("../FakeMovieData");
 const _ = require("lodash");
@@ -39,11 +40,7 @@ const resolvers = {
 
     Mutation: {
         createUser: (parent, args) => {
-            const user = args.input;
-            const lastUserInList= _.maxBy(UserList, "id")
-            user.id = lastUserInList.id + 1;
-            UserList.push(user);
-            return user;
+            return createUser(args.input)
         },
 
         updateUserName: (parent, args) => {

@@ -1,3 +1,4 @@
+const { createUser } = require("../../server/services/userService");
 require("dotenv").config();
 const { Kafka } = require("kafkajs");
 
@@ -15,14 +16,20 @@ async function run() {
     console.log("Consumer is listening on topic: user-events");
 
     await consumer.run({
-        eachMessage: async ({ topic, partition, message }) => {
-            console.log("Message received:");
-            console.log({
-                topic,
-                partition,
-                key: message.key?.toString(),
-                value: message.value?.toString(),
-            });
+        eachMessage: async ({ message }) => {
+            const rawValue = message.value?.toString();
+
+            if (!rawValue) return;
+
+            const event = JSON.parse(rawValue);
+
+            if (event.eventType === "user.created") {
+                const createdUser = createUser(event.payload);
+
+                console.log("User added from event:");
+                console.log(createdUser);
+            }
+            
         },
     });
 }

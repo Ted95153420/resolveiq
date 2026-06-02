@@ -9,7 +9,7 @@ Clone the repo to your local machine.
 TO RUN THE API LOCALLY
 change to the resolveiq/server directory   
 make sure you have docker desktop running locally.   
-run :  dockerbuild -t resolveiq-api .   
+run :  docker build -t resolveiq-api .   
 run : docker run -p 4000:4000  --name resolveiq-api-container resolveiq-api   
 that should run a local instance ot the api browse to it / play around http://localhost:4000/   
   

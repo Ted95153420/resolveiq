@@ -4,9 +4,11 @@ import { useQuery} from "@apollo/client/react";
 const QUERY_ALL_USERS = gql`
     query GetAllUsers{
         users{
+            id
             name
             age
-            nationality            username
+            nationality            
+            username
             loyaltypointbalance
   }
 }`;

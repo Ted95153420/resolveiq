@@ -6,13 +6,13 @@ const QUERY_ALL_USERS = gql`
         users{
             name
             age
-            nationality
-            username
+            nationality            username
             loyaltypointbalance
   }
 }`;
 
 type User = {
+    id: number;
     name: string;
     age: number;
     nationality: string;
@@ -41,7 +41,7 @@ function DisplayData() {
         <div>
             { data?.users.map((user) => {
                     return (
-                        <div key={user.username} style={{ marginBottom: "2rem" }}>
+                        <div key={user.id} style={{ marginBottom: "2rem" }}>
                             <h2>Name: {user.name}</h2>
                             <h3>Age: {user.age}</h3>
                             <h3>Nationality: {user.nationality}</h3>

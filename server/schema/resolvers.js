@@ -7,7 +7,9 @@ const resolvers = {
     Query: {
         //USER RESOLVERS
         users: () => {
-            return getUsers();
+            const users = getUsers();
+            console.log("API users query called.Count:", users.length);
+            return users;
         },
 
         user:(parent, args) => {

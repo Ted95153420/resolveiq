@@ -17,19 +17,22 @@ async function run() {
 
     await consumer.run({
         eachMessage: async ({ message }) => {
-            const rawValue = message.value?.toString();
+            try {
+                const rawValue = message.value?.toString();
 
-            if (!rawValue) return;
+                if (!rawValue) return;
 
-            const event = JSON.parse(rawValue);
+                const event = JSON.parse(rawValue);
 
-            if (event.eventType === "user.created") {
-                const createdUser = createUser(event.payload);
+                if (event.eventType === "user.created") {
+                    const createdUser = await createUser(event.payload);
 
-                console.log("User added from event:");
-                console.log(createdUser);
+                    console.log("User added from event:");
+                    console.log(createdUser);
+                }
+            } catch (error) {
+                console.error("Error handling message:", error);
             }
-            
         },
     });
 }

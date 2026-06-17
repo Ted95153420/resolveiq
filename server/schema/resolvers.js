@@ -5,13 +5,12 @@ const _ = require("lodash");
 
 const resolvers = {
     Query: {
-        //USER RESOLVERS
-        users: () => {
-            return getUsers();
+        users: async () => {
+            return await getUsers();
         },
 
-        user: (parent, args) => {
-            return getUserById(args.id);
+        user: async (parent, args) => {
+            return await getUserById(args.id);
         },
 
         movies: () => {
@@ -19,25 +18,34 @@ const resolvers = {
         },
 
         movie: (parent, args) => {
-            const name = args.name;
-            return _.find(MovieList, { name: name });
+            return _.find(MovieList, { name: args.name });
+        }
+    },
+
+    User: {
+        favouriteMovies: () => {
+            return _.filter(
+                MovieList,
+                (movie) =>
+                    movie.yearOfPublication >= 1982 && movie.yearOfPublication <= 1987
+            );
         }
     },
 
     Mutation: {
-        createUser: (parent, args) => {
-            return createUser(args.input);
+        createUser: async (parent, args) => {
+            return await createUser(args.input);
         },
 
-        updateUserName: (parent, args) => {
+        updateUserName: async (parent, args) => {
             const { id, newUserName } = args.input;
-            return updateUserName(id, newUserName);
+            return await updateUserName(id, newUserName);
         },
 
-        deleteUser: (parent, args) => {
-            return deleteUser(args.id);
+        deleteUser: async (parent, args) => {
+            return await deleteUser(args.id);
         }
-    }
+    },
 };
 
 module.exports = { resolvers };

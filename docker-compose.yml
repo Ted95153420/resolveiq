@@ -1,0 +1,83 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: resolveiq-postgres
+    environment:
+      POSTGRES_DB: resolveiq
+      POSTGRES_USER: resolveiq_user
+      POSTGRES_PASSWORD: resolveiq_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - resolveiq_postgres_data:/var/lib/postgresql/data
+
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:latest
+    container_name: redpanda
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp
+      - "1"
+      - --memory
+      - "1G"
+      - --reserve-memory
+      - "0M"
+      - --node-id
+      - "0"
+      - --check=false
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://redpanda:9092
+    ports:
+      - "9092:9092"
+
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: resolveiq-api-container
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: resolveiq
+      DB_USER: resolveiq_user
+      DB_PASSWORD: resolveiq_pass
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres
+      - redpanda
+
+  consumer:
+    build:
+      context: . 
+      dockerfile: ./streaming/consumer/Dockerfile
+    container_name: resolveiq-consumer-container
+    environment:
+      KAFKA_BROKER: redpanda:9092
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: resolveiq
+      DB_USER: resolveiq_user
+      DB_PASSWORD: resolveiq_pass
+    depends_on:
+      - postgres
+      - redpanda
+
+  ui:
+    build:
+      context: ./client/userfrontend
+      dockerfile: Dockerfile
+      args:
+        VITE_GRAPHQL_API_URL: http://api:4000/graphql
+    container_name: resolveiq-ui-container
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+volumes:
+  resolveiq_postgres_data:

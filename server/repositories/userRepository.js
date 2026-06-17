@@ -1,74 +1,57 @@
-const db = require("../db");
+const pool = require("../db");
 
-function getUsers() {
-    const stmt = db.prepare(`
+async function getUsers() {
+    const result = await pool.query(`
     SELECT id, name, username, age, nationality, loyaltypointbalance
     FROM users
     ORDER BY id
   `);
 
-    return stmt.all();
+    return result.rows;
 }
 
-function getUserById(id) {
-    const stmt = db.prepare(`
+async function getUserById(id) {
+    const result = await pool.query(`
     SELECT id, name, username, age, nationality, loyaltypointbalance
     FROM users
-    WHERE id = ?
-  `);
+    WHERE id = $1
+  `, [Number(id)]);
 
-    return stmt.get(Number(id)) || null;
+    return result.rows[0] || null;
 }
 
-function addUser(newUser) {
-    const stmt = db.prepare(`
+async function addUser(newUser) {
+    await pool.query(`
     INSERT INTO users (id, name, username, age, nationality, loyaltypointbalance)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `);
-
-    stmt.run(
+    VALUES ($1, $2, $3, $4, $5, $6)
+  `, [
         newUser.id,
         newUser.name,
         newUser.username,
         newUser.age,
         newUser.nationality,
         newUser.loyaltypointbalance
-    );
+    ]);
 
     return newUser;
 }
 
-function updateUserName(id, newUserName) {
-    const existingUser = getUserById(id);
-
-    if (!existingUser) {
-        return null;
-    }
-
-    const stmt = db.prepare(`
+async function updateUserName(id, newUserName) {
+    const result = await pool.query(`
     UPDATE users
-    SET username = ?
-    WHERE id = ?
-  `);
+    SET username = $1
+    WHERE id = $2
+    RETURNING id, name, username, age, nationality, loyaltypointbalance
+  `, [newUserName, Number(id)]);
 
-    stmt.run(newUserName, Number(id));
-
-    return getUserById(id);
+    return result.rows[0] || null;
 }
 
-function deleteUser(id) {
-    const existingUser = getUserById(id);
-
-    if (!existingUser) {
-        return null;
-    }
-
-    const stmt = db.prepare(`
+async function deleteUser(id) {
+    await pool.query(`
     DELETE FROM users
-    WHERE id = ?
-  `);
-
-    stmt.run(Number(id));
+    WHERE id = $1
+  `, [Number(id)]);
 
     return null;
 }

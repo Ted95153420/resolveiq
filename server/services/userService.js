@@ -1,8 +1,8 @@
 const _ = require("lodash");
 const { getUsers, addUser } = require("../repositories/userRepository");
 
-function createUser(userInput) {
-    const users = getUsers();
+async function createUser(userInput) {
+    const users = await getUsers();
     const nextId = (_.maxBy(users, "id")?.id ?? 0) + 1;
 
     const newUser = {

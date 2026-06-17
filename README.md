@@ -6,6 +6,15 @@ The Deployed UI is at https://resolveiq-ui.onrender.com
 
 Clone the repo to your local machine.   
 
+GET SETUP THE QUICK WAY  
+  
+Install and Run Docker desktop locally. 
+Only when docker desktop is up and running, run system-setup.bat from the root directory.    
+You will need to run the producer manually whenever you wna tto create a new message. Instructions for starting producer
+are listed below in the long setup.    
+
+GET SET UP THE LONG WAY  
+  
 TO RUN THE API LOCALLY
 change to the resolveiq/server directory   
 make sure you have docker desktop running locally.   

@@ -1,27 +1,41 @@
 @echo off
-echo WARNING: This will delete ALL containers and ALL images.
 
-echo Stopping and deleting all containers...
-for /f %%i in ('docker ps -aq') do docker rm -f %%i
+set ROOT=%~dp0
 
-echo Deleting all images...
-for /f %%i in ('docker images -q') do docker rmi -f %%i
+echo Removing old Redpanda container if it exists...
+docker rm -f streaming 2>nul
 
-echo Changing directory to resolveiq/server...
-cd /d C:\DEVELOPMENT\resolveiq\server
+echo Starting redpanda...
+cd /d "%ROOT%streaming"
+docker compose up -d
+
+
+echo  Removing old API container/image if they exist...
+docker rm -f resolveiq-api-container 2>nul
+docker rmi -f resolveiq-api 2>nul
+
 
 echo Building API image...
+cd /d "%ROOT%server"
 docker build -t resolveiq-api .
 
 echo Running API container...
 docker run -d -p 4000:4000 --name resolveiq-api-container resolveiq-api
 
-echo Changing directory to resolveiq/client/userfrontend...
-cd /d C:\DEVELOPMENT\resolveiq\client\userfrontend
+echo Removing old UI container/image if they exist...
+docker rm -f resolveiq-ui-container 2>nul
+docker rmi -f resolveiq-ui 2>nul
 
-echo Building UI image...
+echo building UI Image...
+cd /d "%ROOT%client\userfrontend"
 docker build -t resolveiq-ui .
 
 echo Running UI container...
 docker run -d -p 8080:80 --name resolveiq-ui-container resolveiq-ui
 
+echo Starting consumer in Git Bash...
+start "ResolveIQ Consumer" "C:\Program Files\Git\bin\bash.exe" -lc "cd /c/DEVELOPMENT/resolveiq/streaming/consumer && npm start; exec bash"
+
+echo Done.
+echo UI:  http://localhost:8080
+echo API: http://localhost:4000

@@ -1,58 +1,81 @@
-const fs = require("fs");
-const path = require("path");
-const _ = require("lodash");
-
-const usersFilePath = path.join(__dirname, "..", "data", "users.json");
-console.log("usersFilePath =", usersFilePath);
+const db = require("../db");
 
 function getUsers() {
-    const fileContents = fs.readFileSync(usersFilePath, "utf-8");
-    return JSON.parse(fileContents);
+    const stmt = db.prepare(`
+    SELECT id, name, username, age, nationality, loyaltypointbalance
+    FROM users
+    ORDER BY id
+  `);
+
+    return stmt.all();
 }
 
-function saveUsers(users) {
-    console.log("Saving users to:", usersFilePath);
-    fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), "utf-8");
+function getUserById(id) {
+    const stmt = db.prepare(`
+    SELECT id, name, username, age, nationality, loyaltypointbalance
+    FROM users
+    WHERE id = ?
+  `);
+
+    return stmt.get(Number(id)) || null;
 }
 
 function addUser(newUser) {
-    const users = getUsers();
-    users.push(newUser);
-    console.log("User count before save:", users.length);
-    saveUsers(users);
+    const stmt = db.prepare(`
+    INSERT INTO users (id, name, username, age, nationality, loyaltypointbalance)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `);
+
+    stmt.run(
+        newUser.id,
+        newUser.name,
+        newUser.username,
+        newUser.age,
+        newUser.nationality,
+        newUser.loyaltypointbalance
+    );
+
     return newUser;
 }
 
 function updateUserName(id, newUserName) {
-    const users = getUsers();
+    const existingUser = getUserById(id);
 
-    const userToUpdate = _.find(users, { id: Number(id) });
-
-    if (!userToUpdate) {
+    if (!existingUser) {
         return null;
     }
 
-    userToUpdate.username = newUserName;
-    saveUsers(users);
+    const stmt = db.prepare(`
+    UPDATE users
+    SET username = ?
+    WHERE id = ?
+  `);
 
-    return userToUpdate;
+    stmt.run(newUserName, Number(id));
+
+    return getUserById(id);
 }
 
 function deleteUser(id) {
-    const users = getUsers();
-    const updatedUsers = users.filter((user) => user.id !== Number(id));
+    const existingUser = getUserById(id);
 
-    if (updatedUsers.length === users.length) {
+    if (!existingUser) {
         return null;
     }
 
-    saveUsers(updatedUsers);
+    const stmt = db.prepare(`
+    DELETE FROM users
+    WHERE id = ?
+  `);
+
+    stmt.run(Number(id));
+
     return null;
 }
 
 module.exports = {
     getUsers,
-    saveUsers,
+    getUserById,
     addUser,
     updateUserName,
     deleteUser,

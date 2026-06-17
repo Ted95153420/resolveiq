@@ -17,7 +17,7 @@ async function run() {
             eventId: crypto.randomUUID(),
             occurredAt: new Date().toISOString(),
             payload: {
-                name: "Where am I?",
+                name: "Is this real??",
                 username: "test101",
                 age: 30,
                 nationality: "CANADA",

@@ -1,34 +1,35 @@
-const fs = require("fs");
-const path = require("path");
 const db = require("./db");
 
-const usersJsonPath = path.join(__dirname, "data", "users.json");
+async function seedUsers() {
+    const user = {
+        id: 1,
+        name: "Lisa",
+        username: "lisa01",
+        age: 34,
+        nationality: "CANADA",
+        loyaltypointbalance: 0
+    };
 
-function seedUsers() {
-    const fileContents = fs.readFileSync(usersJsonPath, "utf-8");
-    const users = JSON.parse(fileContents);
-
-    const insertUser = db.prepare(`
+    await db.query(
+        `
         INSERT INTO users (id, name, username, age, nationality, loyaltypointbalance)
-        VALUES (?, ?, ?, ?, ?, ?)
-    `);
+        VALUES ($1, $2, $3, $4, $5, $6)
+        `,
+        [
+            user.id,
+            user.name,
+            user.username,
+            user.age,
+            user.nationality,
+            user.loyaltypointbalance
+        ]
+    );
 
-    const insertMany = db.transaction((usersToInsert) => {
-        for (const user of usersToInsert) {
-            insertUser.run(
-                user.id,
-                user.name,
-                user.username,
-                user.age,
-                user.nationality,
-                user.loyaltypointbalance ?? 0
-            );
-        }
-    });
-
-    insertMany(users);
-
-    console.log(`${users.length} users seeded into SQLite.`);
+    console.log(`1 user seeded into Postgres.`);
+    await db.end();
 }
 
-seedUsers();
+seedUsers().catch((error) => {
+    console.error("Seeding failed:", error);
+    process.exit(1);
+});

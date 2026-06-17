@@ -72,7 +72,7 @@ services:
       context: ./client/userfrontend
       dockerfile: Dockerfile
       args:
-        VITE_GRAPHQL_API_URL: http://api:4000/graphql
+        VITE_GRAPHQL_API_URL: http://localhost:4000/graphql
     container_name: resolveiq-ui-container
     ports:
       - "8080:80"

@@ -1,5 +1,7 @@
 require("dotenv").config();
+console.log("KAFKA_BROKER =", process.env.KAFKA_BROKER);
 const { Kafka } = require("kafkajs");
+const crypto = require("crypto");
 
 const kafka = new Kafka({
     clientId: "resolveiq-producer",
@@ -17,6 +19,7 @@ async function run() {
             eventId: crypto.randomUUID(),
             occurredAt: new Date().toISOString(),
             payload: {
+                id : Date.now(),
                 name: "Is this real??",
                 username: "test101",
                 age: 30,

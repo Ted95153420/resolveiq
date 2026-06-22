@@ -9,10 +9,12 @@ Clone the repo to your local machine.
 GET SETUP  
   
 Install and Run Docker desktop locally. 
-Only when docker desktop is up and running, run 'docker compose up -d' from the root directory  
-
-
-
+Only when docker desktop is up and running, run 'docker compose up -d' from the root directory 
+   
+After around 2 - 3 minutes you should see the following in your deocker desktop containers  
+   
+![Enter](./readme_media/runningcontainers.jpg)     
+  
 > Investigation-first exception handling for missed loyalty earnings.
 
 ResolveIQ is a workflow-driven review tool that helps loyalty support teams investigate missed-points cases, understand account status, authorize transaction reprocessing, and track cases through to resolution.

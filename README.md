@@ -245,4 +245,15 @@ ResolveIQ is currently being developed as a portfolio project focused on demonst
 
 The goal is not just to build a UI, but to model a believable internal tool that solves a real support problem.
 
+## Workarounds
+In Render.com there is no option but to pay for a background worker. I WAS going to set up by doing something like  
+push to docker...  
+![Enter](./readme_media/pushDockerConsumerImage.jpg)  
 
+I could have just logged into render, created a background worker and used the image I just pushed. Trouble is, you need to pay for this  
+
+![Enter](./readme_media/BackgroundWorkerCosts.jpg)  
+I know that you can spin up as many web services as you like for free so I modified consumer.js to do just that. The only issue here is that on the
+ render free plan, services will shut down and only 'reawaken' when they are used, so we cannot say this solution is 'real time' but near as...  
+
+![Enter](./readme_media/consumermods.jpg)  

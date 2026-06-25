@@ -1,13 +1,45 @@
 require("dotenv").config();
 console.log("KAFKA_BROKER =", process.env.KAFKA_BROKER);
+
 const { Kafka } = require("kafkajs");
 const crypto = require("crypto");
 
-const kafka = new Kafka({
+if (!process.env.KAFKA_BROKER) {
+    throw new Error("KAFKA_BROKER is not set");
+}
+
+const useSecureKafka =
+    process.env.KAFKA_USERNAME &&
+    process.env.KAFKA_PASSWORD &&
+    process.env.KAFKA_CA_CERT;
+
+let kafkaConfig = {
     clientId: "resolveiq-producer",
     brokers: [process.env.KAFKA_BROKER || "localhost:9092"],
-});
+};
 
+if (useSecureKafka) {
+    console.log("Starting producer in secure Kafka mode (Aiven).");
+
+    const caCert = process.env.KAFKA_CA_CERT.replace(/\\n/g, "\n");
+
+    kafkaConfig = {
+        ...kafkaConfig,
+        ssl: {
+            rejectUnauthorized: true,
+            ca: [caCert],
+        },
+        sasl: {
+            mechanism: "plain",
+            username: process.env.KAFKA_USERNAME,
+            password: process.env.KAFKA_PASSWORD,
+        },
+    };
+} else {
+    console.log("Starting producer in local Kafka mode (plain Redpanda).");
+}
+
+const kafka = new Kafka(kafkaConfig);
 const producer = kafka.producer();
 
 async function run() {
@@ -19,7 +51,7 @@ async function run() {
             eventId: crypto.randomUUID(),
             occurredAt: new Date().toISOString(),
             payload: {
-                id : Date.now(),
+                id: Date.now(),
                 name: "Is this real??",
                 username: "test101",
                 age: 30,

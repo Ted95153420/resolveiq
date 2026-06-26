@@ -3,6 +3,7 @@ console.log("KAFKA_BROKER =", process.env.KAFKA_BROKER);
 
 const { Kafka } = require("kafkajs");
 const crypto = require("crypto");
+const { generateRandomFullName } = require("../services/nameService");
 
 if (!process.env.KAFKA_BROKER) {
     throw new Error("KAFKA_BROKER is not set");
@@ -42,36 +43,54 @@ if (useSecureKafka) {
 const kafka = new Kafka(kafkaConfig);
 const producer = kafka.producer();
 
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function buildUserEvent(index) {
+    const randomNumber = getRandomInt(1, 10_000_000);
+    const username = `demo${randomNumber}`;
+    const fullName = generateRandomFullName();
+    const age = getRandomInt(21, 68);
+
+    return {
+        eventType: "user.created",
+        eventId: crypto.randomUUID(),
+        occurredAt: new Date().toISOString(),
+        payload: {
+            id: Date.now() + index,
+            name: fullName,
+            username,
+            age,
+            nationality: "CANADA",
+            loyaltypointbalance: index * 100,
+        },
+    };
+}
+
 async function run() {
     try {
         await producer.connect();
 
-        const event = {
-            eventType: "user.created",
-            eventId: crypto.randomUUID(),
-            occurredAt: new Date().toISOString(),
-            payload: {
-                id: Date.now(),
-                name: "Mick Jagger",
-                username: "test105",
-                age: 91,
-                nationality: "CANADA",
-                loyaltypointbalance: 3000,
-            },
-        };
+        const events = Array.from({ length: 10 }, (_, i) => buildUserEvent(i + 1));
 
-        await producer.send({
-            topic: "user-events",
-            messages: [
-                {
-                    key: String(event.payload.id),
-                    value: JSON.stringify(event),
-                },
-            ],
-        });
+        await Promise.all(
+            events.map(async (event) => {
+                await producer.send({
+                    topic: "user-events",
+                    messages: [
+                        {
+                            key: String(event.payload.id),
+                            value: JSON.stringify(event),
+                        },
+                    ],
+                });
 
-        console.log("Published event:");
-        console.log(JSON.stringify(event, null, 2));
+                console.log(`Published ${event.payload.name} (${event.payload.username})`);
+            })
+        );
+
+        console.log("All demo events published.");
     } catch (error) {
         console.error("Producer failed:", error);
     } finally {

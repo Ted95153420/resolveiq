@@ -1,7 +1,7 @@
 import './App.css'
 import { ApolloProvider } from '@apollo/client/react';
 import { ApolloClient, InMemoryCache, HttpLink} from '@apollo/client';
-import DisplayData from './RetrieveUserData';
+import UserTransactionListing from './UserTransactionListing';
 
 
 function App() { 
@@ -16,8 +16,7 @@ function App() {
     return (
         <ApolloProvider client={client}>
             <div className="App">
-                <h1>List Of Loyalty Customers</h1>
-                <DisplayData/>
+                <UserTransactionListing/>
             </div>
         </ApolloProvider>
     );

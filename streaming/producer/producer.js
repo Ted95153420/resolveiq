@@ -52,9 +52,9 @@ async function run() {
             occurredAt: new Date().toISOString(),
             payload: {
                 id: Date.now(),
-                name: "Daniel Smith",
-                username: "test102",
-                age: 50,
+                name: "Kier Starmer",
+                username: "test103",
+                age: 60,
                 nationality: "CANADA",
                 loyaltypointbalance: 300,
             },

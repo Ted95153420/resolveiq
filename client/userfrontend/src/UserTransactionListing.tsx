@@ -9,6 +9,7 @@ import TableCell from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const QUERY_ALL_USERS = gql`
     query GetAllUsers {
@@ -39,13 +40,25 @@ type GetAllUsersData = {
 function UserTransactionListing() {
     const { data, loading, error } = useQuery<GetAllUsersData>(QUERY_ALL_USERS, {
         pollInterval: 3000,
+        notifyOnNetworkStatusChange: true,
     });
 
-    if (data) {
-        console.log(data);
+    if (loading && !data) {
+        return (
+            <Box
+                sx={{
+                    minHeight: "100vh",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: "#f7f9fc",
+                }}
+            >
+                <CircularProgress />
+            </Box>
+        );
     }
 
-    if (loading) return <div>Loading...</div>;
     if (error) return <div>Error loading users.</div>;
 
     return (

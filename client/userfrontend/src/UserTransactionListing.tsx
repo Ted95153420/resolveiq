@@ -1,5 +1,13 @@
 import { gql } from "@apollo/client";
-import { useQuery} from "@apollo/client/react";
+import { useQuery } from "@apollo/client/react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
 
 const QUERY_ALL_USERS = gql`
     query GetAllUsers{
@@ -40,19 +48,35 @@ function UserTransactionListing() {
     if (error) return <div>Error loading users.</div>;
 
     return (
-        <div>
-            { data?.users.map((user) => {
-                    return (
-                        <div key={user.id} style={{ marginBottom: "2rem" }}>
-                            <h2>List Of Loyalty Customers</h2>
-                            <h2>Name: {user.name}</h2>
-                            <h3>Age: {user.age}</h3>
-                            <h3>Nationality: {user.nationality}</h3>
-                            <h3>Loyalty Balance: {user.loyaltypointbalance}</h3>
-                        </div>
-                    );
-                })}
-        </div>
+        <TableContainer component={Paper}>
+            <Typography variant="h5" sx={{ p: 2 }}>
+                List Of Loyalty Customers
+            </Typography>
+
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Name</TableCell>
+                        <TableCell>Username</TableCell>
+                        <TableCell>Age</TableCell>
+                        <TableCell>Nationality</TableCell>
+                        <TableCell>Loyalty Balance</TableCell>
+                    </TableRow>
+                </TableHead>
+
+                <TableBody>
+                    {data?.users.map((user) => (
+                        <TableRow key={user.id}>
+                            <TableCell>{user.name}</TableCell>
+                            <TableCell>{user.username}</TableCell>
+                            <TableCell>{user.age}</TableCell>
+                            <TableCell>{user.nationality}</TableCell>
+                            <TableCell>{user.loyaltypointbalance}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
     );
 }
 

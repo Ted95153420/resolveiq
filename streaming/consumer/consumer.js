@@ -104,10 +104,14 @@ async function run() {
                 const event = JSON.parse(rawValue);
 
                 if (event.eventType === "user.created") {
-                    const createdUser = await createUser(event.payload);
+                    const createdUser = await createUser(event);
 
-                    console.log("User added from event:");
-                    console.log(createdUser);
+                    if (createdUser) {
+                        console.log("User added from event:");
+                        console.log(createdUser);
+                    } else {
+                        console.log(`Duplicate event ignored: ${event.eventId}`);
+                    }
                 }
             } catch (error) {
                 console.error("Error handling message:", error);

@@ -56,10 +56,21 @@ async function deleteUser(id) {
     return null;
 }
 
+async function getUserByUsername(username) {
+    const result = await pool.query(`
+        SELECT id, name, username, age, nationality, loyaltypointbalance
+        FROM users
+        WHERE username = $1
+    `, [username]);
+
+    return result.rows[0] || null;
+}
+
 module.exports = {
     getUsers,
     getUserById,
     addUser,
     updateUserName,
     deleteUser,
+    getUserByUsername,
 };

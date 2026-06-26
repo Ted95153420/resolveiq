@@ -52,11 +52,11 @@ async function run() {
             occurredAt: new Date().toISOString(),
             payload: {
                 id: Date.now(),
-                name: "Kier Starmer",
-                username: "test103",
-                age: 60,
+                name: "Mick Jagger",
+                username: "test105",
+                age: 91,
                 nationality: "CANADA",
-                loyaltypointbalance: 300,
+                loyaltypointbalance: 3000,
             },
         };
 

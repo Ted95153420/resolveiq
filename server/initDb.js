@@ -7,12 +7,13 @@ async function init() {
     await pool.query(`
 
     DROP TABLE IF EXISTS transactions;
-        DROP TABLE IF EXISTS users;
+    DROP TABLE IF EXISTS users;
+    DROP TABLE IF EXISTS processed_events;
 
     CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY,
             name TEXT NOT NULL,
-            username TEXT NOT NULL,
+            username TEXT NOT NULL UNIQUE,
             age INTEGER NOT NULL,
             nationality TEXT NOT NULL,
             loyaltypointbalance INTEGER NOT NULL DEFAULT 0
@@ -27,9 +28,15 @@ async function init() {
             FOREIGN KEY (user_id) REFERENCES users(id)
         );
 
+        CREATE TABLE IF NOT EXISTS processed_events (
+            event_id TEXT PRIMARY KEY,
+            event_type TEXT NOT NULL,
+            processed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+
   `);
 
-    console.log("Users and transactionstable is ready.");
+    console.log("Users, transactions  and transactions table are ready.");
     await pool.end();
 }
 

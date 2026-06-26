@@ -26,7 +26,7 @@ type GetAllUsersData = {
     users: User[];
 };
 
-function DisplayData() {
+function UserTransactionListing() {
 
     const { data, loading, error } = useQuery<GetAllUsersData>(QUERY_ALL_USERS , {
         pollInterval: 3000,
@@ -44,6 +44,7 @@ function DisplayData() {
             { data?.users.map((user) => {
                     return (
                         <div key={user.id} style={{ marginBottom: "2rem" }}>
+                            <h2>List Of Loyalty Customers</h2>
                             <h2>Name: {user.name}</h2>
                             <h3>Age: {user.age}</h3>
                             <h3>Nationality: {user.nationality}</h3>
@@ -55,4 +56,4 @@ function DisplayData() {
     );
 }
 
-export default DisplayData;
+export default UserTransactionListing;

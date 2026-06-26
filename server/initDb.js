@@ -14,7 +14,7 @@ async function init() {
             name TEXT NOT NULL,
             username TEXT NOT NULL,
             age INTEGER NOT NULL,
-            nationality TEXT NOT NULL
+            nationality TEXT NOT NULL,
             loyaltypointbalance INTEGER NOT NULL DEFAULT 0
         );
 

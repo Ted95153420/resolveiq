@@ -1,5 +1,6 @@
 const _ = require("lodash");
-const { getUsers, addUser, getUserByUsername} = require("../repositories/userRepository");
+const { getUsers, addUser, getUserByUsername } = require("../repositories/userRepository");
+
 const {
     hasProcessedEvent,
     recordProcessedEvent,
@@ -36,5 +37,7 @@ async function createUser(event) {
 
     return newUser;
 }
+
+
 
 module.exports = { createUser };

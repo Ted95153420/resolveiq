@@ -1,6 +1,5 @@
 const { createUser } = require("../services/userService");
 const { getUsers, getUserById, updateUserName, deleteUser } = require("../repositories/userRepository");
-const { MovieList } = require("../FakeMovieData");
 const _ = require("lodash");
 
 const resolvers = {
@@ -12,24 +11,6 @@ const resolvers = {
         user: async (parent, args) => {
             return await getUserById(args.id);
         },
-
-        movies: () => {
-            return MovieList;
-        },
-
-        movie: (parent, args) => {
-            return _.find(MovieList, { name: args.name });
-        }
-    },
-
-    User: {
-        favouriteMovies: () => {
-            return _.filter(
-                MovieList,
-                (movie) =>
-                    movie.yearOfPublication >= 1982 && movie.yearOfPublication <= 1987
-            );
-        }
     },
 
     Mutation: {

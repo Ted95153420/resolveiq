@@ -56,6 +56,24 @@ services:
       context: . 
       dockerfile: ./streaming/consumer/Dockerfile
     container_name: resolveiq-consumer-container
+    command: npm run start:users
+    environment:
+      KAFKA_BROKER: redpanda:9092
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: resolveiq
+      DB_USER: resolveiq_user
+      DB_PASSWORD: resolveiq_pass
+    depends_on:
+      - postgres
+      - redpanda
+
+  transactions-consumer:
+    build:
+      context: . 
+      dockerfile: ./streaming/consumer/Dockerfile
+    container_name: resolveiq-transactionsConsumer-container
+    command: npm run start:transactions
     environment:
       KAFKA_BROKER: redpanda:9092
       DB_HOST: postgres

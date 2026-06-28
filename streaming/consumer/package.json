@@ -4,7 +4,8 @@
   "main": "consumer.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node consumer.js"
+    "start:users": "node consumer.js",
+    "start:transactions": "node transactionsConsumer.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

@@ -72,7 +72,7 @@ services:
     build:
       context: . 
       dockerfile: ./streaming/consumer/Dockerfile
-    container_name: resolveiq-transactionsConsumer-container
+    container_name: resolveiq-transactions-consumer-container
     command: npm run start:transactions
     environment:
       KAFKA_BROKER: redpanda:9092

@@ -8,6 +8,12 @@ if (!process.env.KAFKA_BROKER) {
     throw new Error("KAFKA_BROKER is not set");
 }
 
+const targetUsername = process.argv[2];
+
+if (!targetUsername) {
+    throw new Error("Please provide a username. Example: node transactionsProducer.js demo12345");
+}
+
 const useSecureKafka =
     process.env.KAFKA_USERNAME &&
     process.env.KAFKA_PASSWORD &&
@@ -42,26 +48,24 @@ if (useSecureKafka) {
 const kafka = new Kafka(kafkaConfig);
 const producer = kafka.producer();
 
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
 function getRandomAmount(min, max) {
     return Number((Math.random() * (max - min) + min).toFixed(2));
 }
 
-// Change this to whichever user you want to target
-const targetUsername = "demo12345";
+function getRandomGameType() {
+    const gameTypes = ["Slots", "Blackjack", "Roulette", "Poker", "Baccarat"];
+    return gameTypes[Math.floor(Math.random() * gameTypes.length)];
+}
 
-function buildTransactionEvent() {
+function buildTransactionEvent(username) {
     return {
         eventType: "transaction.created",
         eventId: crypto.randomUUID(),
         occurredAt: new Date().toISOString(),
         payload: {
             id: Date.now(),
-            username: targetUsername,
-            gametype: "Slots",
+            username,
+            gametype: getRandomGameType(),
             amountwagered: getRandomAmount(1, 500),
             transaction_timestamp: new Date().toISOString(),
         },
@@ -72,7 +76,7 @@ async function run() {
     try {
         await producer.connect();
 
-        const event = buildTransactionEvent();
+        const event = buildTransactionEvent(targetUsername);
 
         await producer.send({
             topic: "transaction-events",
@@ -84,7 +88,7 @@ async function run() {
             ],
         });
 
-        console.log("Published transaction event:");
+        console.log(`Published transaction for ${targetUsername}`);
         console.log(JSON.stringify(event, null, 2));
     } catch (error) {
         console.error("Transactions producer failed:", error);

@@ -20,7 +20,7 @@ async function init() {
         );
 
         CREATE TABLE IF NOT EXISTS transactions (
-            id INTEGER PRIMARY KEY,
+            id BIGINT PRIMARY KEY,
             user_id INTEGER NOT NULL,
             gametype TEXT NOT NULL,
             amountwagered NUMERIC(10,2) NOT NULL,

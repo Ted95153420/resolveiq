@@ -1,4 +1,13 @@
 const typeDefs = `#graphql
+ type Transaction {
+      id: String!
+      user_id: Int!
+      gametype: String!
+      amountwagered: Float!
+      transaction_timestamp: String!
+ }
+
+
  type User {
       id: Int!
       name: String!
@@ -6,6 +15,7 @@ const typeDefs = `#graphql
       age: Int!
       nationality: Nationality!
       loyaltypointbalance:Int!
+      transactions: [Transaction!]!
   }
 
   type Query {

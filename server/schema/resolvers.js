@@ -1,6 +1,6 @@
 const { createUser } = require("../services/userService");
 const { getUsers, getUserById, updateUserName, deleteUser } = require("../repositories/userRepository");
-const _ = require("lodash");
+const { getTransactionsByUserId } = require("../repositories/transactionRepository");
 
 const resolvers = {
     Query: {
@@ -10,6 +10,12 @@ const resolvers = {
 
         user: async (parent, args) => {
             return await getUserById(args.id);
+        },
+    },
+
+    User: {
+        transactions: async (parent) => {
+            return await getTransactionsByUserId(parent.id);
         },
     },
 

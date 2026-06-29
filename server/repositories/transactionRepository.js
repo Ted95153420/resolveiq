@@ -16,6 +16,19 @@ async function addTransaction(newTransaction) {
     return newTransaction;
 }
 
+async function getTransactionsByUserId(userId) {
+    const result = await pool.query(`
+        SELECT id, user_id, gametype, amountwagered, transaction_timestamp
+        FROM transactions
+        WHERE user_id = $1
+        ORDER BY transaction_timestamp DESC
+        LIMIT 20
+    `, [Number(userId)]);
+
+    return result.rows;
+}
+
 module.exports = {
-    addTransaction
+    addTransaction,
+    getTransactionsByUserId
 };

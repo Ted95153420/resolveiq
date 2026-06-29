@@ -1,27 +1,16 @@
 const typeDefs = `#graphql
  type User {
-     id: Int!
+      id: Int!
       name: String!
       username: String!
       age: Int!
       nationality: Nationality!
-      friends: [User]
-      favouriteMovies:[Movie]
       loyaltypointbalance:Int!
   }
 
   type Query {
     users: [User!]!
     user(id: ID!): User!
-    movies:[Movie!]!
-    movie(name: String!): Movie!
-  }
-
-  type Movie {
-      id: ID!
-      name : String!
-      yearOfPublication: Int!
-      isInTheatres: Boolean!
   }
 
   input CreateUserInput {

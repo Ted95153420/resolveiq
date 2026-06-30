@@ -20,9 +20,22 @@ const QUERY_ALL_USERS = gql`
             nationality
             username
             loyaltypointbalance
+            transactions {
+                id
+                gametype
+                amountwagered
+                transaction_timestamp
+            }
         }
     }
 `;
+
+type Transaction = {
+    id: string;
+    gametype: string;
+    amountwagered: number;
+    transaction_timestamp: string;
+};
 
 type User = {
     id: number;
@@ -31,6 +44,7 @@ type User = {
     nationality: string;
     username: string;
     loyaltypointbalance: number;
+    transactions: Transaction[];
 };
 
 type GetAllUsersData = {

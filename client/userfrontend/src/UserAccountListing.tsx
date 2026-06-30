@@ -37,7 +37,7 @@ type GetAllUsersData = {
     users: User[];
 };
 
-function UserTransactionListing() {
+function UserAccountListing() {
     const { data, loading, error } = useQuery<GetAllUsersData>(QUERY_ALL_USERS, {
         pollInterval: 3000,
         notifyOnNetworkStatusChange: true,
@@ -133,4 +133,4 @@ function UserTransactionListing() {
     );
 }
 
-export default UserTransactionListing;
+export default UserAccountListing;

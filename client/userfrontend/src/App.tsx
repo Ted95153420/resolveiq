@@ -1,7 +1,7 @@
 import './App.css'
 import { ApolloProvider } from '@apollo/client/react';
 import { ApolloClient, InMemoryCache, HttpLink} from '@apollo/client';
-import UserTransactionListing from './UserTransactionListing';
+import UserAccountListing from './UserAccountListing';
 
 
 function App() { 
@@ -16,7 +16,7 @@ function App() {
     return (
         <ApolloProvider client={client}>
             <div className="App">
-                <UserTransactionListing/>
+                <UserAccountListing/>
             </div>
         </ApolloProvider>
     );

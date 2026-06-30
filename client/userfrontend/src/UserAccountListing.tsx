@@ -1,3 +1,4 @@
+import { ExpandButton } from "./ExpandButton";
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 import Table from "@mui/material/Table";
@@ -106,6 +107,7 @@ function UserAccountListing() {
                                 backgroundColor: "#e8eef7",
                             }}
                         >
+                            <TableCell sx={{ width: "56px" }} />
                             <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
                             <TableCell sx={{ fontWeight: 700 }}>Username</TableCell>
                             <TableCell sx={{ fontWeight: 700 }}>Age</TableCell>
@@ -125,6 +127,9 @@ function UserAccountListing() {
                                     },
                                 }}
                             >
+                                <TableCell sx={{ width: "56px" }}>
+                                    <ExpandButton isOpen={false} toggle={() => { }} />
+                                </TableCell>
                                 <TableCell>{user.name}</TableCell>
                                 <TableCell>{user.username}</TableCell>
                                 <TableCell>{user.age}</TableCell>

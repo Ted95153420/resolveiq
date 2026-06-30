@@ -1,4 +1,8 @@
+import { Fragment, useState } from "react";
+//THIS ONE YOU IDIOT
 import { ExpandButton } from "./ExpandButton";
+//THIS ONE YOU IDIOT
+import UserTransactionListing from "./UserTransactionListing";
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 import Table from "@mui/material/Table";
@@ -53,6 +57,9 @@ type GetAllUsersData = {
 };
 
 function UserAccountListing() {
+    //THIS ONE YOU IDIOT
+    const [openUserId, setOpenUserId] = useState<number | null>(null);
+
     const { data, loading, error } = useQuery<GetAllUsersData>(QUERY_ALL_USERS, {
         pollInterval: 3000,
         notifyOnNetworkStatusChange: true,
@@ -117,34 +124,62 @@ function UserAccountListing() {
                     </TableHead>
 
                     <TableBody>
-                        {data?.users.map((user, index) => (
-                            <TableRow
-                                key={user.id}
-                                sx={{
-                                    backgroundColor: index % 2 === 0 ? "#ffffff" : "#f8fbff",
-                                    "&:hover": {
-                                        backgroundColor: "#eaf3ff",
-                                    },
-                                }}
-                            >
-                                <TableCell sx={{ width: "56px" }}>
-                                    <ExpandButton isOpen={false} toggle={() => { }} />
-                                </TableCell>
-                                <TableCell>{user.name}</TableCell>
-                                <TableCell>{user.username}</TableCell>
-                                <TableCell>{user.age}</TableCell>
-                                <TableCell>{user.nationality}</TableCell>
-                                <TableCell
-                                    sx={{
-                                        fontWeight: 800,
-                                        fontSize: "1rem",
-                                        color: user.loyaltypointbalance > 0 ? "#1565c0" : "#6b7280",
-                                    }}
-                                >
-                                    {user.loyaltypointbalance}
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                        {data?.users.map((user, index) => {
+                            //THIS ONE YOU IDIOT
+                            const isOpen = openUserId === user.id;
+
+                            return (
+                                //THIS ONE YOU IDIOT
+                                <Fragment key={user.id}>
+                                    <TableRow
+                                        sx={{
+                                            backgroundColor: index % 2 === 0 ? "#ffffff" : "#f8fbff",
+                                            "&:hover": {
+                                                backgroundColor: "#eaf3ff",
+                                            },
+                                        }}
+                                    >
+                                        <TableCell sx={{ width: "56px" }}>
+                                            {/* THIS ONE YOU IDIOT */}
+                                            <ExpandButton
+                                                isOpen={isOpen}
+                                                toggle={() => setOpenUserId(isOpen ? null : user.id)}
+                                            />
+                                        </TableCell>
+                                        <TableCell>{user.name}</TableCell>
+                                        <TableCell>{user.username}</TableCell>
+                                        <TableCell>{user.age}</TableCell>
+                                        <TableCell>{user.nationality}</TableCell>
+                                        <TableCell
+                                            sx={{
+                                                fontWeight: 800,
+                                                fontSize: "1rem",
+                                                color: user.loyaltypointbalance > 0 ? "#1565c0" : "#6b7280",
+                                            }}
+                                        >
+                                            {user.loyaltypointbalance}
+                                        </TableCell>
+                                    </TableRow>
+
+                                    {/* THIS ONE YOU IDIOT */}
+                                    {isOpen && (
+                                        <TableRow>
+                                            {/* THIS ONE YOU IDIOT */}
+                                            <TableCell
+                                                colSpan={6}
+                                                sx={{
+                                                    p: 0,
+                                                    backgroundColor: "#f8fbff",
+                                                }}
+                                            >
+                                                {/* THIS ONE YOU IDIOT */}
+                                                <UserTransactionListing transactions={user.transactions} />
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </Fragment>
+                            );
+                        })}
                     </TableBody>
                 </Table>
             </TableContainer>

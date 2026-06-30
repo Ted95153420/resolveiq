@@ -63,7 +63,7 @@ function buildUserEvent(index) {
             username,
             age,
             nationality: "CANADA",
-            loyaltypointbalance: getRandomInt(1, 200000),
+            loyaltypointbalance: 0,
         },
     };
 }

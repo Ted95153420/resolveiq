@@ -47,6 +47,17 @@ async function updateUserName(id, newUserName) {
     return result.rows[0] || null;
 }
 
+async function updateUserLoyaltyBalance(id, newBalance) {
+    const result = await pool.query(`
+        UPDATE users
+        SET loyaltypointbalance = $1
+        WHERE id = $2
+        RETURNING id, name, username, age, nationality, loyaltypointbalance
+    `, [newBalance, Number(id)]);
+
+    return result.rows[0] || null;
+}
+
 async function deleteUser(id) {
     await pool.query(`
     DELETE FROM users
@@ -71,6 +82,7 @@ module.exports = {
     getUserById,
     addUser,
     updateUserName,
+    updateUserLoyaltyBalance,
     deleteUser,
     getUserByUsername,
 };

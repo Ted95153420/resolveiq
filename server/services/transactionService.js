@@ -4,6 +4,7 @@ const {
     hasProcessedEvent,
     recordProcessedEvent,
 } = require("../repositories/processedEventRepository");
+const { applyTransactionToLoyalty } = require("./loyaltyService");
 
 async function createTransaction(event) {
     const { eventId, eventType, payload } = event;
@@ -33,9 +34,13 @@ async function createTransaction(event) {
     };
 
     await addTransaction(newTransaction);
+    const loyaltyResult = await applyTransactionToLoyalty(existingUser, newTransaction);
     await recordProcessedEvent(eventId, eventType);
 
-    return newTransaction;
+    return {
+        transaction: newTransaction,
+        loyalty : loyaltyResult,
+    };
 }
 
 module.exports = { createTransaction };

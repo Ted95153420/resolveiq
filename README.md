@@ -13,7 +13,47 @@ Only when docker desktop is up and running, run 'docker compose up -d' from the 
    
 After around 2 - 3 minutes you should see the following in your deocker desktop containers  
    
-![Enter](./readme_media/runningcontainers.jpg)     
+![Enter](./readme_media/runningcontainers.jpg)   
+
+## Setup notes for production demos.
+Boot up each consumer web service just navigate to  
+https://resolveiq-consumer-latest.onrender.com  
+and  
+https://resolveiq-transactions-consumer-latest.onrender.com  
+
+after visiting each of thye above youll see a message in the browser indicating that the service is up and running.
+
+Clear database of all existing entries so you can start from scratch. Locally you can run 
+ 
+PGPASSWORD=<dbpassword> psql -h dpg-d8tbtpm7r5hc73eqvkd0-a.ohio-postgres.render.com -U resolveis_user resolveiq  
+from a Unix style github prompt. That will get you connected. Once connected  
+DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS processed_events;
+
+CREATE TABLE IF NOT EXISTS users (  
+        id INTEGER PRIMARY KEY,  
+        name TEXT NOT NULL,  
+        username TEXT NOT NULL UNIQUE,  
+        age INTEGER NOT NULL,  
+        nationality TEXT NOT NULL,  
+        loyaltypointbalance INTEGER NOT NULL DEFAULT 0  
+    );  
+
+    CREATE TABLE IF NOT EXISTS transactions (  
+        id BIGINT PRIMARY KEY,  
+        user_id INTEGER NOT NULL,  
+        gametype TEXT NOT NULL,
+        amountwagered NUMERIC(10,2) NOT NULL,  
+        transaction_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  
+        FOREIGN KEY (user_id) REFERENCES users(id)  
+    );  
+
+    CREATE TABLE IF NOT EXISTS processed_events (  
+        event_id TEXT PRIMARY KEY,  
+        event_type TEXT NOT NULL,  
+        processed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  
+    );    
   
 > Investigation-first exception handling for missed loyalty earnings.
 

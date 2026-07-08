@@ -3,11 +3,21 @@ jest.mock("../../repositories/processedEventRepository", () => ({
     hasProcessedEvent: jest.fn(),
 }));
 
+jest.mock("../../repositories/transactionRepository", () => ({
+    addTransaction: jest.fn(),
+}));
+
 jest.mock("../../repositories/userRepository", () => ({
     getUserByUsername: jest.fn(),
 }));
 
-const { createTransaction } = require("../../services/transactionService");
+jest.mock("../../services/loyaltyService", () => ({
+    applyTransactionToLoyalty: jest.fn(),
+}));
+
+const {
+    createTransaction,
+} = require("../../services/transactionService");
 
 const {
     getUserByUsername
@@ -17,6 +27,10 @@ const {
     recordProcessedEvent,
     hasProcessedEvent,
 } = require("../../repositories/processedEventRepository");
+
+const {
+    addTransaction,
+} = require("../../repositories/transactionRepository");
 
 describe("transactionService", () => {
     const event = {
@@ -66,5 +80,21 @@ describe("transactionService", () => {
         const result = await createTransaction(event);
 
         expect(result).toBeNull();
+    });
+
+    test("createTransaction calls addTransaction if transaction not processed before and user exists ", async () => {
+        hasProcessedEvent.mockResolvedValue(false);
+        getUserByUsername.mockResolvedValue({
+            id: 1,
+            name: "Demo User",
+            username: "demo123",
+            age: 32,
+            nationality: "CANADA",
+            loyaltypointbalance: 1000,
+        });
+
+        const result = await createTransaction(event);
+
+        expect(addTransaction).toHaveBeenCalled();
     });
 });

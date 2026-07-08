@@ -2,7 +2,15 @@ jest.mock("../../repositories/processedEventRepository", () => ({
     hasProcessedEvent: jest.fn(),
 }));
 
+jest.mock("../../repositories/userRepository", () => ({
+    getUserByUsername: jest.fn(),
+}));
+
 const { createTransaction } = require("../../services/transactionService");
+
+const {
+    getUserByUsername
+} = require("../../repositories/userRepository");
 
 const {
     hasProcessedEvent,
@@ -30,5 +38,10 @@ describe("transactionService", () => {
         hasProcessedEvent.mockResolvedValue(true);
         const result = await createTransaction(event);
         expect(result).toBeNull();
+    });
+
+    test("createTransaction does not call getUserByUsername if Transaction event was already processed", async () => {
+        hasProcessedEvent.mockResolvedValue(true);
+        expect(getUserByUsername).not.toHaveBeenCalled();
     });
 });

@@ -27,6 +27,7 @@ require("dotenv").config();
 const { Kafka } = require("kafkajs");
 const { startHttpServer } = require("./startHttpServer");
 const { buildKafkaConfig } = require("./kafkaConfig");
+const { handleUserEvent } = require("./handlers/userEventHandler");
 
 const app = express();
 const PORT = process.env.PORT || 10000;
@@ -55,17 +56,8 @@ async function run() {
                 if (!rawValue) return;
 
                 const event = JSON.parse(rawValue);
-
-                if (event.eventType === "user.created") {
-                    const createdUser = await createUser(event);
-
-                    if (createdUser) {
-                        console.log("User added from event:");
-                        console.log(createdUser);
-                    } else {
-                        console.log(`Duplicate event ignored: ${event.eventId}`);
-                    }
-                }
+                await handleUserEvent(event);
+                
             } catch (error) {
                 console.error("Error handling message:", error);
             }

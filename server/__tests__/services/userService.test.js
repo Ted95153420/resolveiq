@@ -23,15 +23,7 @@ const {
     recordProcessedEvent,
 } = require("../../repositories/processedEventRepository");
 
-
-
-describe("userService", () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
-
-    test("user is not created if username already exists", async () => {
-        const existingUser = {
+ const existingUser = {
             id: 1,
             name: "Existing User",
             username: "demo123",
@@ -52,13 +44,34 @@ describe("userService", () => {
             },
         };
 
+describe("createUser", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();       
+    });
+
+    test("create User returns existing user returned if already in database", async () => {
         hasProcessedEvent.mockResolvedValue(false);
         getUserByUsername.mockResolvedValue(existingUser);
-
         const result = await createUser(event);
 
         expect(result).toEqual(existingUser);
+    });
+
+    test("createUser does not call addUser when existing user detected", async () => {
+        hasProcessedEvent.mockResolvedValue(false);
+        getUserByUsername.mockResolvedValue(existingUser);
+        await createUser(event);
+
         expect(addUser).not.toHaveBeenCalled();
+    });
+    
+    test("createUser does record event as processed even if existing user detected", async () => {
+        hasProcessedEvent.mockResolvedValue(false);
+        getUserByUsername.mockResolvedValue(existingUser);
+
+        await createUser(event);
+
         expect(recordProcessedEvent).toHaveBeenCalledWith("event-123", "user.created");
+
     });
 });

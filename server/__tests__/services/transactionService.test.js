@@ -32,7 +32,7 @@ const {
     addTransaction,
 } = require("../../repositories/transactionRepository");
 
-describe("transactionService", () => {
+describe("createTransaction", () => {
     const event = {
         eventId: "txn-event-123",
         eventType: "transaction.created",

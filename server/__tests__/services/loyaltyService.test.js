@@ -1,6 +1,6 @@
 const { calculatePointsFromAmount } = require("../../services/loyaltyService");
 
-describe("loyaltyService", () => {
+describe("calculatePointsFromAmount", () => {
     test("awards 1 point per whole dollar waged", () => { 
         expect(calculatePointsFromAmount(45.66)).toBe(45);
     });

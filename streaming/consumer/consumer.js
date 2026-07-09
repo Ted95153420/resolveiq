@@ -25,23 +25,13 @@ const express = require("express");
 const { createUser } = require("../../server/services/userService");
 require("dotenv").config();
 const { Kafka } = require("kafkajs");
+const { startHttpServer } = require("./startHttpServer");
 const { buildKafkaConfig } = require("./kafkaConfig");
 
 const app = express();
 const PORT = process.env.PORT || 10000;
-
-// TODO: This HTTP endpoint was added purely so Render can treat this process
-// as a Web Service. Remove this if/when the consumer is deployed as a true
-// Background Worker.
-app.get("/", (req, res) => {
-    res.send("ResolveIQ consumer is running.");
-});
-
-// TODO: This HTTP listener was added purely for the Render Web Service
-// workaround. Remove this if/when the consumer runs as a proper Background Worker.
-app.listen(PORT, "0.0.0.0", () => {
-    console.log(`HTTP server listening on port ${PORT}`);
-});
+//TO DO - read comments in startHttpServer.js and action when ready.
+startHttpServer(PORT);
 
 const kafka = new Kafka(buildKafkaConfig("resolveiq-consumer"));
 const consumer = kafka.consumer({ groupId: "resolveiq-test-group" });

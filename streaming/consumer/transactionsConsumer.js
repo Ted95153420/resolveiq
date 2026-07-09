@@ -25,62 +25,14 @@ const express = require("express");
 const { createTransaction } = require("../../server/services/transactionService");
 require("dotenv").config();
 const { Kafka } = require("kafkajs");
+const { startHttpServer } = require("./startHttpServer");
+const { buildKafkaConfig } = require("./kafkaConfig");
 
 const app = express();
 const PORT = process.env.PORT || 10001;
+startHttpServer(PORT);
 
-// TODO: This HTTP endpoint was added purely so Render can treat this process
-// as a Web Service. Remove this if/when the consumer is deployed as a true
-// Background Worker.
-app.get("/", (req, res) => {
-    res.send("ResolveIQ transactions consumer is running.");
-});
-
-// TODO: This HTTP listener was added purely for the Render Web Service
-// workaround. Remove this if/when the consumer runs as a proper Background Worker.
-app.listen(PORT, "0.0.0.0", () => {
-    console.log(`HTTP server listening on port ${PORT}`);
-});
-
-if (!process.env.KAFKA_BROKER) {
-    throw new Error("KAFKA_BROKER is not set");
-}
-
-const useSecureKafka =
-    process.env.KAFKA_USERNAME &&
-    process.env.KAFKA_PASSWORD &&
-    process.env.KAFKA_CA_CERT;
-
-let kafkaConfig = {
-    clientId: "resolveiq-transactions-consumer",
-    brokers: [process.env.KAFKA_BROKER],
-};
-
-if (useSecureKafka) {
-    console.log("Starting transactions consumer in secure Kafka mode (Aiven / Render).");
-
-    const caCert = process.env.KAFKA_CA_CERT.replace(/\\n/g, "\n");
-
-    kafkaConfig = {
-        ...kafkaConfig,
-        ssl: {
-            rejectUnauthorized: true,
-            ca: [caCert],
-        },
-        sasl: {
-            mechanism: "plain",
-            username: process.env.KAFKA_USERNAME,
-            password: process.env.KAFKA_PASSWORD,
-        },
-    };
-} else {
-    console.log("Starting transactions consumer in local Kafka mode (plain Redpanda).");
-}
-
-console.log("Broker:", process.env.KAFKA_BROKER);
-console.log("Port:", PORT);
-
-const kafka = new Kafka(kafkaConfig);
+const kafka = new Kafka(buildKafkaConfig("resolveiq-transactions-consumer"));
 const consumer = kafka.consumer({ groupId: "resolveiq-transactions-group" });
 
 async function run() {

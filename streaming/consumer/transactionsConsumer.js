@@ -27,6 +27,7 @@ require("dotenv").config();
 const { Kafka } = require("kafkajs");
 const { startHttpServer } = require("./startHttpServer");
 const { buildKafkaConfig } = require("./kafkaConfig");
+const { handleTransactionEvent } = require("./handlers/transactionEventHandler");
 
 const app = express();
 const PORT = process.env.PORT || 10001;
@@ -50,21 +51,10 @@ async function run() {
         eachMessage: async ({ message }) => {
             try {
                 const rawValue = message.value?.toString();
-
                 if (!rawValue) return;
-
                 const event = JSON.parse(rawValue);
-
-                if (event.eventType === "transaction.created") {
-                    const createdTransaction = await createTransaction(event);
-
-                    if (createdTransaction) {
-                        console.log("Transaction added from event:");
-                        console.log(createdTransaction);
-                    } else {
-                        console.log(`Duplicate or skipped transaction event: ${event.eventId}`);
-                    }
-                }
+                await handleTransactionEvent(event);
+                
             } catch (error) {
                 console.error("Error handling transaction message:", error);
             }

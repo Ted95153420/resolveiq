@@ -1,6 +1,5 @@
 
 jest.mock("../../repositories/userRepository", () => ({
-    getUsers: jest.fn(),
     addUser: jest.fn(),
     getUserByUsername: jest.fn(),
 }));
@@ -16,7 +15,6 @@ const {
 } = require("../../services/userService");
 
 const {
-    getUsers,
     addUser,
     getUserByUsername,
 } = require("../../repositories/userRepository");
@@ -73,14 +71,10 @@ describe("createUserFromDashboard", () => {
 
         getUserByUsername.mockResolvedValue(null);
 
-        getUsers.mockResolvedValue([
-            {
-                id: 1,
-                username: "existing-user",
-            },
-        ]);
-
-        addUser.mockImplementation(async (user) => user);
+        addUser.mockImplementation(async (user) => ({
+            id: 2,
+            ...user,
+        }));
 
         const result = await createUserFromDashboard(input);
 
@@ -103,13 +97,14 @@ describe("createUserFromDashboard", () => {
         };
 
         getUserByUsername.mockResolvedValue(null);
-        getUsers.mockResolvedValue([]);
-        addUser.mockImplementation(async (user) => user);
+        addUser.mockImplementation(async (user) => ({
+            id: 2,
+            ...user,
+        }));
 
         await createUserFromDashboard(input);
 
         expect(addUser).toHaveBeenCalledWith({
-            id: 1,
             name: "Sarah Thompson",
             username: "sarah123",
             age: 34,

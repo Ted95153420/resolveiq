@@ -18,24 +18,22 @@ async function createUser(event) {
     const existingUser = await getUserByUsername(payload.username);
 
     if (existingUser) {
-        console.log(`User with username ${payload.username} already exists. Skipping create.`);
         await recordProcessedEvent(eventId, eventType);
         return existingUser;
     }
 
-    const users = await getUsers();
-    const nextId = (_.maxBy(users, "id")?.id ?? 0) + 1;
-
     const newUser = {
-        ...payload,
-        id: nextId,
+        name: payload.name,
+        username: payload.username,
+        age: payload.age,
+        nationality: payload.nationality,
         loyaltypointbalance: payload.loyaltypointbalance ?? 0,
     };
 
-    await addUser(newUser);
+    const createdUser = await addUser(newUser);
     await recordProcessedEvent(eventId, eventType);
 
-    return newUser;
+    return createdUser;
 }
 
 async function createUserFromDashboard(input) {
@@ -45,12 +43,8 @@ async function createUserFromDashboard(input) {
         throw new Error(`Username '${input.username}' already exists`);
     }
 
-    const users = await getUsers();
-    const nextId = (_.maxBy(users, "id")?.id ?? 0) + 1;
-
     const newUser = {
         ...input,
-        id: nextId,
         loyaltypointbalance: 0,
     };
 

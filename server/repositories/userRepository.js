@@ -21,11 +21,17 @@ async function getUserById(id) {
 }
 
 async function addUser(newUser) {
-    await pool.query(`
-    INSERT INTO users (id, name, username, age, nationality, loyaltypointbalance)
-    VALUES ($1, $2, $3, $4, $5, $6)
+    const result = await pool.query(`
+    INSERT INTO users (name, username, age, nationality, loyaltypointbalance)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING
+        id,
+        name,
+        username,
+        age,
+        nationality,
+        loyaltypointbalance
   `, [
-        newUser.id,
         newUser.name,
         newUser.username,
         newUser.age,
@@ -33,7 +39,7 @@ async function addUser(newUser) {
         newUser.loyaltypointbalance
     ]);
 
-    return newUser;
+    return result.rows[0];
 }
 
 async function updateUserName(id, newUserName) {

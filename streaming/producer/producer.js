@@ -58,7 +58,6 @@ function buildUserEvent(index) {
         eventId: crypto.randomUUID(),
         occurredAt: new Date().toISOString(),
         payload: {
-            id: Date.now() + index,
             name: fullName,
             username,
             age,
@@ -72,7 +71,7 @@ async function run() {
     try {
         await producer.connect();
 
-        const events = Array.from({ length: 10 }, (_, i) => buildUserEvent(i + 1));
+        const events = Array.from({ length: 10 }, () => buildUserEvent());
 
         await Promise.all(
             events.map(async (event) => {
@@ -80,7 +79,7 @@ async function run() {
                     topic: "user-events",
                     messages: [
                         {
-                            key: String(event.payload.id),
+                            key: String(event.payload.username),
                             value: JSON.stringify(event),
                         },
                     ],

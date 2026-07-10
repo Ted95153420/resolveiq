@@ -1,20 +1,24 @@
 import { Fragment, useState } from "react";
-//THIS ONE YOU IDIOT
-import { ExpandButton } from "./ExpandButton";
-//THIS ONE YOU IDIOT
-import UserTransactionListing from "./UserTransactionListing";
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
+
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
+
+import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+
+import CreateUserDialog from "./CreateUserDialog";
+import { ExpandButton } from "./ExpandButton";
+import UserTransactionListing from "./UserTransactionListing";
 
 const QUERY_ALL_USERS = gql`
     query GetAllUsers {
@@ -57,13 +61,16 @@ type GetAllUsersData = {
 };
 
 function UserAccountListing() {
-    //THIS ONE YOU IDIOT
     const [openUserId, setOpenUserId] = useState<number | null>(null);
+    const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
-    const { data, loading, error } = useQuery<GetAllUsersData>(QUERY_ALL_USERS, {
-        pollInterval: 3000,
-        notifyOnNetworkStatusChange: true,
-    });
+    const { data, loading, error, refetch } = useQuery<GetAllUsersData>(
+        QUERY_ALL_USERS,
+        {
+            pollInterval: 3000,
+            notifyOnNetworkStatusChange: true,
+        }
+    );
 
     if (loading && !data) {
         return (
@@ -81,10 +88,32 @@ function UserAccountListing() {
         );
     }
 
-    if (error) return <div>Error loading users.</div>;
+    if (error) {
+        return (
+            <Box
+                sx={{
+                    minHeight: "100vh",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: "#f7f9fc",
+                }}
+            >
+                <Typography color="error">
+                    Error loading users.
+                </Typography>
+            </Box>
+        );
+    }
 
     return (
-        <Box sx={{ p: 3, backgroundColor: "#f7f9fc", minHeight: "100vh" }}>
+        <Box
+            sx={{
+                p: 3,
+                backgroundColor: "#f7f9fc",
+                minHeight: "100vh",
+            }}
+        >
             <TableContainer
                 component={Paper}
                 elevation={4}
@@ -93,19 +122,70 @@ function UserAccountListing() {
                     overflow: "hidden",
                 }}
             >
-                <Typography
-                    variant="h4"
+                <Box
                     sx={{
-                        p: 3,
-                        fontWeight: 700,
-                        textAlign: "center",
-                        background: "linear-gradient(90deg, #0f172a 0%, #1e3a8a 100%)",
+                        position: "relative",
+                        px: 3,
+                        py: 3,
+                        background:
+                            "linear-gradient(90deg, #0f172a 0%, #1e3a8a 100%)",
                         color: "white",
-                        letterSpacing: "0.5px",
+                        display: "flex",
+                        flexDirection: {
+                            xs: "column",
+                            md: "row",
+                        },
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 2,
                     }}
                 >
-                    Player Loyalty Overview
-                </Typography>
+                    <Box sx={{ textAlign: "center" }}>
+                        <Typography
+                            variant="h4"
+                            sx={{
+                                fontWeight: 700,
+                                color: "white",
+                                letterSpacing: "0.5px",
+                            }}
+                        >
+                            Player Loyalty Overview
+                        </Typography>
+
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                mt: 0.5,
+                                color: "rgba(255, 255, 255, 0.72)",
+                            }}
+                        >
+                            Manage users, balances and recent activity.
+                        </Typography>
+                    </Box>
+
+                    <Button
+                        variant="contained"
+                        startIcon={<PersonAddAlt1Icon />}
+                        onClick={() => setCreateDialogOpen(true)}
+                        sx={{
+                            position: {
+                                xs: "static",
+                                md: "absolute",
+                            },
+                            right: {
+                                md: 24,
+                            },
+                            backgroundColor: "white",
+                            color: "#1e3a8a",
+                            fontWeight: 700,
+                            "&:hover": {
+                                backgroundColor: "#eff6ff",
+                            },
+                        }}
+                    >
+                        Create User
+                    </Button>
+                </Box>
 
                 <Table>
                     <TableHead>
@@ -115,56 +195,77 @@ function UserAccountListing() {
                             }}
                         >
                             <TableCell sx={{ width: "56px" }} />
-                            <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
-                            <TableCell sx={{ fontWeight: 700 }}>Username</TableCell>
-                            <TableCell sx={{ fontWeight: 700 }}>Age</TableCell>
-                            <TableCell sx={{ fontWeight: 700 }}>Nationality</TableCell>
-                            <TableCell sx={{ fontWeight: 700 }}>Loyalty Balance</TableCell>
+                            <TableCell sx={{ fontWeight: 700 }}>
+                                Name
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: 700 }}>
+                                Username
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: 700 }}>
+                                Age
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: 700 }}>
+                                Nationality
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: 700 }}>
+                                Loyalty Balance
+                            </TableCell>
                         </TableRow>
                     </TableHead>
 
                     <TableBody>
                         {data?.users.map((user, index) => {
-                            //THIS ONE YOU IDIOT
                             const isOpen = openUserId === user.id;
 
                             return (
-                                //THIS ONE YOU IDIOT
                                 <Fragment key={user.id}>
                                     <TableRow
                                         sx={{
-                                            backgroundColor: index % 2 === 0 ? "#ffffff" : "#f8fbff",
+                                            backgroundColor:
+                                                index % 2 === 0
+                                                    ? "#ffffff"
+                                                    : "#f8fbff",
                                             "&:hover": {
                                                 backgroundColor: "#eaf3ff",
                                             },
                                         }}
                                     >
                                         <TableCell sx={{ width: "56px" }}>
-                                            {/* THIS ONE YOU IDIOT */}
                                             <ExpandButton
                                                 isOpen={isOpen}
-                                                toggle={() => setOpenUserId(isOpen ? null : user.id)}
+                                                toggle={() =>
+                                                    setOpenUserId(
+                                                        isOpen
+                                                            ? null
+                                                            : user.id
+                                                    )
+                                                }
                                             />
                                         </TableCell>
+
                                         <TableCell>{user.name}</TableCell>
                                         <TableCell>{user.username}</TableCell>
                                         <TableCell>{user.age}</TableCell>
-                                        <TableCell>{user.nationality}</TableCell>
+                                        <TableCell>
+                                            {user.nationality}
+                                        </TableCell>
+
                                         <TableCell
                                             sx={{
                                                 fontWeight: 800,
                                                 fontSize: "1rem",
-                                                color: user.loyaltypointbalance > 0 ? "#1565c0" : "#6b7280",
+                                                color:
+                                                    user.loyaltypointbalance > 0
+                                                        ? "#1565c0"
+                                                        : "#6b7280",
                                             }}
                                         >
                                             {user.loyaltypointbalance}
                                         </TableCell>
                                     </TableRow>
 
-                                    {/* THIS ONE YOU IDIOT */}
                                     {isOpen && (
                                         <TableRow>
-                                            {/* THIS ONE YOU IDIOT */}
                                             <TableCell
                                                 colSpan={6}
                                                 sx={{
@@ -172,8 +273,11 @@ function UserAccountListing() {
                                                     backgroundColor: "#f8fbff",
                                                 }}
                                             >
-                                                {/* THIS ONE YOU IDIOT */}
-                                                <UserTransactionListing transactions={user.transactions} />
+                                                <UserTransactionListing
+                                                    transactions={
+                                                        user.transactions
+                                                    }
+                                                />
                                             </TableCell>
                                         </TableRow>
                                     )}
@@ -183,6 +287,14 @@ function UserAccountListing() {
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            <CreateUserDialog
+                open={createDialogOpen}
+                onClose={() => setCreateDialogOpen(false)}
+                onUserCreated={async () => {
+                    await refetch();
+                }}
+            />
         </Box>
     );
 }

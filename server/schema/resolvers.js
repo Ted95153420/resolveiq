@@ -1,6 +1,17 @@
-const { createUser } = require("../services/userService");
-const { getUsers, getUserById, updateUserName, deleteUser } = require("../repositories/userRepository");
-const { getTransactionsByUserId } = require("../repositories/transactionRepository");
+const { 
+    createUserFromDashboard,
+} = require("../services/userService");
+
+const { 
+    getUsers, 
+    getUserById, 
+    updateUserName, 
+    deleteUser 
+} = require("../repositories/userRepository");
+
+const { 
+    getTransactionsByUserId,
+} = require("../repositories/transactionRepository");
 
 const resolvers = {
     Query: {
@@ -21,7 +32,7 @@ const resolvers = {
 
     Mutation: {
         createUser: async (parent, args) => {
-            return await createUser(args.input);
+            return await createUserFromDashboard(args.input);
         },
 
         updateUserName: async (parent, args) => {

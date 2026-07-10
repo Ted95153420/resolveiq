@@ -1,3 +1,8 @@
+const { GraphQLError } = require("graphql");
+const {
+    DuplicateUsernameError,
+} = require("../errors/DuplicateUsernameError");
+
 const { 
     createUserFromDashboard,
 } = require("../services/userService");
@@ -32,8 +37,21 @@ const resolvers = {
 
     Mutation: {
         createUser: async (parent, args) => {
+        try {
             return await createUserFromDashboard(args.input);
-        },
+        } catch (error) {
+            if (error instanceof DuplicateUsernameError) {
+                throw new GraphQLError(error.message, {
+                    extensions: {
+                        code: "BAD_USER_INPUT",
+                        field: "username",
+                    },
+                });
+            }
+
+            throw error;
+        }
+    },
 
         updateUserName: async (parent, args) => {
             const { id, newUserName } = args.input;

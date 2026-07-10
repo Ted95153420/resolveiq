@@ -6,6 +6,10 @@ const {
     recordProcessedEvent,
 } = require("../repositories/processedEventRepository");
 
+const {
+    DuplicateUsernameError,
+} = require("../errors/DuplicateUsernameError");
+
 async function createUser(event) {
     const { eventId, eventType, payload } = event;
 
@@ -48,7 +52,20 @@ async function createUserFromDashboard(input) {
         loyaltypointbalance: 0,
     };
 
-    return await addUser(newUser);
+    try
+    {
+        return await addUser(newUser);
+    } catch(error){
+        const isDuplicateUserName =
+            error.code === "23505" &&
+            error.constraint === "users_username_key";
+
+        if (isDuplicateUserName) {
+            throw new DuplicateUsernameError(input.username);
+        }
+
+        throw error;
+    }
 }
 
 module.exports = {

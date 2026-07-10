@@ -59,7 +59,7 @@ const newUserEvent = {
 
 describe("createUserFromDashboard", () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        jest.resetAllMocks();
     });
     test("createUserFromDashboard creates a user when username is available", async () => {
         const input = {
@@ -152,11 +152,49 @@ describe("createUserFromDashboard", () => {
 
         expect(addUser).not.toHaveBeenCalled();
     });
+
+    test("createUserFromDashboard converts PostgreSQL duplicate username error into a clear error", async () => {
+        const input = {
+            name: "Sarah Thompson",
+            username: "sarah123",
+            age: 34,
+            nationality: "CANADA",
+        };
+
+        getUserByUsername.mockResolvedValue(null);
+
+        addUser.mockRejectedValue({
+            code: "23505",
+            constraint: "users_username_key",
+        });
+
+        await expect(createUserFromDashboard(input)).rejects.toThrow(
+            "Username 'sarah123' already exists"
+        );
+    });
+
+    test("createUserFromDashboard rethrows unexpected database errors", async () => {
+        const input = {
+            name: "Sarah Thompson",
+            username: "sarah123",
+            age: 34,
+            nationality: "CANADA",
+        };
+
+        const databaseError = new Error("Database unavailable");
+
+        getUserByUsername.mockResolvedValue(null);
+        addUser.mockRejectedValue(databaseError);
+
+        await expect(createUserFromDashboard(input)).rejects.toThrow(
+            "Database unavailable"
+        );
+    });
 });
 
 describe("createUser", () => {
     beforeEach(() => {
-        jest.clearAllMocks();       
+        jest.resetAllMocks();       
     });
 
     test("create User returns existing user returned if already in database", async () => {

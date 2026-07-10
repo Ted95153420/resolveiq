@@ -193,73 +193,78 @@ function CreateUserDialog({
                 </Box>
             </DialogTitle>
 
-            <DialogContent sx={{ p: 3 }}>
-                {formError && (
-                    <Alert severity="error" sx={{ mb: 2 }}>
-                        {formError}
-                    </Alert>
-                )}
+            <DialogContent
+                sx={{
+                    px: 3,
+                    pb: 3,
+                    overflow: "visible",
+                }}
+            >
+            {formError && (
+                <Alert severity="error" sx={{ mt: 2.5, mb: 2 }}>
+                    {formError}
+                </Alert>
+            )}
 
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: {
-                            xs: "1fr",
-                            sm: "1fr 1fr",
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: {
+                        xs: "1fr",
+                        sm: "1fr 1fr",
+                    },
+                    columnGap: 2,
+                    rowGap: 2.5,
+                    mt: formError ? 0 : 3,
+                }}
+            >
+                <TextField
+                    label="Full name"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    autoFocus
+                    required
+                    fullWidth
+                />
+
+                <TextField
+                    label="Username"
+                    value={username}
+                    onChange={(event) => setUsername(event.target.value)}
+                    required
+                    fullWidth
+                    helperText="Must be unique"
+                />
+
+                <TextField
+                    label="Age"
+                    value={age}
+                    onChange={(event) => setAge(event.target.value)}
+                    type="number"
+                    required
+                    fullWidth
+                    slotProps={{
+                        htmlInput: {
+                            min: 1,
+                            step: 1,
                         },
-                        gap: 2,
-                        mt: 0.5,
                     }}
+                />
+
+                <TextField
+                    select
+                    label="Nationality"
+                    value={nationality}
+                    onChange={(event) => setNationality(event.target.value)}
+                    fullWidth
                 >
-                    <TextField
-                        label="Full name"
-                        value={name}
-                        onChange={(event) => setName(event.target.value)}
-                        autoFocus
-                        required
-                        fullWidth
-                    />
-
-                    <TextField
-                        label="Username"
-                        value={username}
-                        onChange={(event) => setUsername(event.target.value)}
-                        required
-                        fullWidth
-                        helperText="Must be unique"
-                    />
-
-                    <TextField
-                        label="Age"
-                        value={age}
-                        onChange={(event) => setAge(event.target.value)}
-                        type="number"
-                        required
-                        fullWidth
-                        slotProps={{
-                            htmlInput: {
-                                min: 1,
-                                step: 1,
-                            },
-                        }}
-                    />
-
-                    <TextField
-                        select
-                        label="Nationality"
-                        value={nationality}
-                        onChange={(event) =>
-                            setNationality(event.target.value)
-                        }
-                        fullWidth
-                    >
-                        {nationalities.map((option) => (
-                            <MenuItem key={option} value={option}>
-                                {option.replaceAll("_", " ")}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                </Box>
+                    {nationalities.map((option) => (
+                        <MenuItem key={option} value={option}>
+                            {option.replaceAll("_", " ")}
+                        </MenuItem>
+                    ))}
+                </TextField>
+            </Box>
 
                 <Box
                     sx={{

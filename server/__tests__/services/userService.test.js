@@ -10,7 +10,10 @@ jest.mock("../../repositories/processedEventRepository", () => ({
     recordProcessedEvent: jest.fn(),
 }));
 
-const { createUser } = require("../../services/userService");
+const { 
+    createUser,
+    createUserFromDashboard,
+} = require("../../services/userService");
 
 const {
     getUsers,
@@ -44,15 +47,6 @@ const existingUserEvent = {
     },
 };
 
-const newUser = {
-    id: 2,
-    name: "New User",
-    username: "demo124",
-    age: 27,
-    nationality: "CANADA",
-    loyaltypointbalance: 0,
-};
-
 const newUserEvent = {
     eventId: "event-124",
     eventType: "user.created",
@@ -65,6 +59,105 @@ const newUserEvent = {
     },
 };
 
+describe("createUserFromDashboard", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+    test("createUserFromDashboard creates a user when username is available", async () => {
+        const input = {
+            name: "Sarah Thompson",
+            username: "sarah123",
+            age: 34,
+            nationality: "CANADA",
+        };
+
+        getUserByUsername.mockResolvedValue(null);
+
+        getUsers.mockResolvedValue([
+            {
+                id: 1,
+                username: "existing-user",
+            },
+        ]);
+
+        addUser.mockImplementation(async (user) => user);
+
+        const result = await createUserFromDashboard(input);
+
+        expect(result).toEqual({
+            id: 2,
+            name: "Sarah Thompson",
+            username: "sarah123",
+            age: 34,
+            nationality: "CANADA",
+            loyaltypointbalance: 0,
+        });
+    });
+
+    test("createUserFromDashboard calls addUser for a new username", async () => {
+        const input = {
+            name: "Sarah Thompson",
+            username: "sarah123",
+            age: 34,
+            nationality: "CANADA",
+        };
+
+        getUserByUsername.mockResolvedValue(null);
+        getUsers.mockResolvedValue([]);
+        addUser.mockImplementation(async (user) => user);
+
+        await createUserFromDashboard(input);
+
+        expect(addUser).toHaveBeenCalledWith({
+            id: 1,
+            name: "Sarah Thompson",
+            username: "sarah123",
+            age: 34,
+            nationality: "CANADA",
+            loyaltypointbalance: 0,
+        });
+    });
+
+    test("createUserFromDashboard rejects an existing username", async () => {
+        const input = {
+            name: "Different Person",
+            username: "sarah123",
+            age: 42,
+            nationality: "CANADA",
+        };
+
+        getUserByUsername.mockResolvedValue({
+            id: 1,
+            name: "Sarah Thompson",
+            username: "sarah123",
+            age: 34,
+            nationality: "CANADA",
+            loyaltypointbalance: 500,
+        });
+
+        await expect(createUserFromDashboard(input)).rejects.toThrow(
+            "Username 'sarah123' already exists"
+        );
+    });
+
+    test("createUserFromDashboard does not call addUser when username exists", async () => {
+        const input = {
+            name: "Different Person",
+            username: "sarah123",
+            age: 42,
+            nationality: "CANADA",
+        };
+
+        getUserByUsername.mockResolvedValue({
+            id: 1,
+            username: "sarah123",
+        });
+
+        await expect(createUserFromDashboard(input)).rejects.toThrow();
+
+        expect(addUser).not.toHaveBeenCalled();
+    });
+});
 
 describe("createUser", () => {
     beforeEach(() => {
@@ -103,7 +196,7 @@ describe("createUser", () => {
 
         await createUser(newUserEvent);
 
-        expect(addUser).toHaveBeenCalled()
+        expect(addUser).toHaveBeenCalled();
 
     });
 

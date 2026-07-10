@@ -38,6 +38,26 @@ async function createUser(event) {
     return newUser;
 }
 
+async function createUserFromDashboard(input) {
+    const existingUser = await getUserByUsername(input.username);
 
+    if (existingUser) {
+        throw new Error(`Username '${input.username}' already exists`);
+    }
 
-module.exports = { createUser };
+    const users = await getUsers();
+    const nextId = (_.maxBy(users, "id")?.id ?? 0) + 1;
+
+    const newUser = {
+        ...input,
+        id: nextId,
+        loyaltypointbalance: 0,
+    };
+
+    return await addUser(newUser);
+}
+
+module.exports = {
+    createUser,
+    createUserFromDashboard,
+};

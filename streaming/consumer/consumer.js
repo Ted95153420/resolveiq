@@ -21,50 +21,21 @@
  * Background Worker style service and the HTTP server removed.
  */
 
-const express = require("express");
-const { createUser } = require("../../server/services/userService");
 require("dotenv").config();
-const { Kafka } = require("kafkajs");
 const { startHttpServer } = require("./startHttpServer");
-const { buildKafkaConfig } = require("./kafkaConfig");
+const { runConsumer } = require("./runConsumer");
 const { handleUserEvent } = require("./handlers/userEventHandler");
 
-const app = express();
 const PORT = process.env.PORT || 10000;
-//TO DO - read comments in startHttpServer.js and action when ready.
+
+// TODO - read comments in startHttpServer.js and action when ready.
 startHttpServer(PORT);
 
-const kafka = new Kafka(buildKafkaConfig("resolveiq-consumer"));
-const consumer = kafka.consumer({ groupId: "resolveiq-test-group" });
-
-async function run() {
-    await consumer.connect();
-
-    // TODO: We are using fromBeginning: false here because when running as a
-    // Render Web Service, restarts/spin-downs could cause old messages to be
-    // replayed unnecessarily. Revisit this setting later when running as a
-    // proper always-on background service.
-    await consumer.subscribe({ topic: "user-events", fromBeginning: false });
-
-    console.log("Consumer is listening on topic: user-events");
-
-    await consumer.run({
-        eachMessage: async ({ message }) => {
-            try {
-                const rawValue = message.value?.toString();
-
-                if (!rawValue) return;
-
-                const event = JSON.parse(rawValue);
-                await handleUserEvent(event);
-                
-            } catch (error) {
-                console.error("Error handling message:", error);
-            }
-        },
-    });
-}
-
-run().catch((error) => {
+runConsumer({
+    clientId: "resolveiq-consumer",
+    groupId: "resolveiq-test-group",
+    topic: "user-events",
+    handler: handleUserEvent,
+}).catch((error) => {
     console.error("Consumer failed:", error);
 });

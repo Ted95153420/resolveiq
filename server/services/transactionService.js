@@ -4,7 +4,7 @@ const {
     hasProcessedEvent,
     recordProcessedEvent,
 } = require("../repositories/processedEventRepository");
-const { applyTransactionToLoyalty } = require("./loyaltyService");
+const { applyTransactionToLoyalty, calculatePointsFromAmount } = require("./loyaltyService");
 
 async function createTransaction(event) {
     const { eventId, eventType, payload } = event;
@@ -25,12 +25,18 @@ async function createTransaction(event) {
         return null;
     }
 
+    const pointsDelta = calculatePointsFromAmount(payload.amountwagered)
+
     const newTransaction = {
         id: payload.id,
         user_id: existingUser.id,
+        transactioncode: payload.transactioncode,
         gametype: payload.gametype,
         amountwagered: payload.amountwagered,
-        transaction_timestamp: payload.transaction_timestamp ?? new Date().toISOString(),
+        points_delta: pointsDelta,
+        adjustment_reason: payload.adjustment_reason ?? null,
+        transaction_timestamp:
+            payload.transaction_timestamp ?? new Date().toISOString(),
     };
 
     await addTransaction(newTransaction);

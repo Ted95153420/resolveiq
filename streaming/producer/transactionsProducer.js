@@ -58,6 +58,8 @@ function getRandomGameType() {
 }
 
 function buildTransactionEvent(username) {
+    const amountWagered = getRandomAmount(1, 500);
+
     return {
         eventType: "transaction.created",
         eventId: crypto.randomUUID(),
@@ -65,8 +67,9 @@ function buildTransactionEvent(username) {
         payload: {
             id: Date.now(),
             username,
+            transactioncode: "TRAN",
             gametype: getRandomGameType(),
-            amountwagered: getRandomAmount(1, 500),
+            amountwagered: amountWagered,
             transaction_timestamp: new Date().toISOString(),
         },
     };

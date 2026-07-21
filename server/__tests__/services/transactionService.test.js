@@ -12,6 +12,7 @@ jest.mock("../../repositories/userRepository", () => ({
 }));
 
 jest.mock("../../services/loyaltyService", () => ({
+    calculatePointsFromAmount: jest.fn(),
     applyTransactionToLoyalty: jest.fn(),
 }));
 
@@ -32,6 +33,11 @@ const {
     addTransaction,
 } = require("../../repositories/transactionRepository");
 
+const {
+    calculatePointsFromAmount,
+    applyTransactionToLoyalty,
+} = require("../../services/loyaltyService");
+
 describe("createTransaction", () => {
     const event = {
         eventId: "txn-event-123",
@@ -39,13 +45,14 @@ describe("createTransaction", () => {
         payload: {
             id: 123456789,
             username: "demo123",
+            transactioncode : "TRAN",
             gametype: "Slots",
             amountwagered: 45.66,
             transaction_timestamp: "2026-06-30T10:30:00.000Z",
         },
     };
     beforeEach(() => {
-        jest.clearAllMocks();
+        jest.resetAllMocks();
     });
 
     
@@ -93,8 +100,21 @@ describe("createTransaction", () => {
             loyaltypointbalance: 1000,
         });
 
-        const result = await createTransaction(event);
+        calculatePointsFromAmount.mockReturnValue(45);
 
-        expect(addTransaction).toHaveBeenCalled();
+        await createTransaction(event);
+        expect(calculatePointsFromAmount).toHaveBeenCalledWith(45.66);
+        expect(addTransaction).toHaveBeenCalledWith(
+            expect.objectContaining(
+                {
+                    id: 123456789,
+                    user_id: 1,
+                    transactioncode: "TRAN",
+                    gametype: "Slots",
+                    amountwagered: 45.66,
+                    points_delta: 45,
+                }
+            )
+        );
     });
 });

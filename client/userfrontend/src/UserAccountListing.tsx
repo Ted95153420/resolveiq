@@ -41,8 +41,11 @@ const QUERY_ALL_USERS = gql`
 
 type Transaction = {
     id: string;
-    gametype: string;
-    amountwagered: number;
+    transactioncode: "TRAN" | "ADJ";
+    gametype: string | null;
+    amountwagered: number | null;
+    points_delta: number;
+    adjustment_reason: string | null;
     transaction_timestamp: string;
 };
 

@@ -3,8 +3,8 @@ const typeDefs = `#graphql
       id: String!
       user_id: Int!
       transactioncode: TransactionCode!
-      gametype: String!
-      amountwagered: Float!
+      gametype: String
+      amountwagered: Float
       points_delta: Int!
       adjustment_reason: String
       transaction_timestamp: String!

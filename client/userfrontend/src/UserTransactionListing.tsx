@@ -8,8 +8,11 @@ import Typography from "@mui/material/Typography";
 
 type Transaction = {
     id: string;
-    gametype: string;
-    amountwagered: number;
+    transactioncode: "TRAN" | "ADJ";
+    gametype: string | null;
+    amountwagered: number | null;
+    points_delta: number;
+    adjustment_reason: string | null;
     transaction_timestamp: string;
 };
 
@@ -140,7 +143,17 @@ function UserTransactionListing({ transactions }: UserTransactionListingProps) {
                                         whiteSpace: "nowrap",
                                     }}
                                 >
-                                    {formatCurrency(transaction.amountwagered)}
+                                    {transaction.transactioncode === "TRAN" &&
+                                        transaction.amountwagered !== null && (
+                                            <Typography
+                                                sx={{
+                                                    fontWeight: 700,
+                                                    color: "#1565c0",
+                                                }}
+                                            >
+                                                {formatCurrency(transaction.amountwagered)}
+                                            </Typography>
+                                        )}
                                 </Typography>
                             </Box>
                         </ListItem>

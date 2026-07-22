@@ -2,6 +2,8 @@ import { Fragment, useState } from "react";
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 import type { Transaction } from "../transactions/transactionTypes";
+import AdjustPointsButton from "../pointadjustments/AdjustPointsButton";
+import AdjustPointsDialog from "../pointadjustments/AdjustPointsDialog";
 
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -18,6 +20,7 @@ import CreateUserDialog from "./CreateUserDialog";
 import { ExpandButton } from "./ExpandButton";
 import UserTransactionListing from "../transactions/UserTransactionListing";
 import UserAccountHeader from "./UserAccountHeader";
+
 
 const QUERY_ALL_USERS = gql`
     query GetAllUsers {
@@ -59,6 +62,7 @@ type GetAllUsersData = {
 function UserAccountListing() {
     const [openUserId, setOpenUserId] = useState<number | null>(null);
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [adjustmentUser, setAdjustmentUser] = useState<User | null>(null);
 
     const { data, loading, error, refetch } = useQuery<GetAllUsersData>(
         QUERY_ALL_USERS,
@@ -145,6 +149,15 @@ function UserAccountListing() {
                             <TableCell sx={{ fontWeight: 700 }}>
                                 Loyalty Balance
                             </TableCell>
+                            <TableCell
+                                align="right"
+                                sx={{
+                                    fontWeight: 700,
+                                    pr: 3,
+                                }}
+                            >
+                                Actions
+                            </TableCell>
                         </TableRow>
                     </TableHead>
 
@@ -197,12 +210,22 @@ function UserAccountListing() {
                                         >
                                             {user.loyaltypointbalance}
                                         </TableCell>
+                                        <TableCell
+                                            align="right"
+                                            sx={{
+                                                pr: 3,
+                                            }}
+                                        >
+                                            <AdjustPointsButton
+                                                onClick={() => setAdjustmentUser(user)}
+                                            />
+                                        </TableCell>
                                     </TableRow>
 
                                     {isOpen && (
                                         <TableRow>
                                             <TableCell
-                                                colSpan={6}
+                                                colSpan={7}
                                                 sx={{
                                                     p: 0,
                                                     backgroundColor: "#f8fbff",
@@ -227,6 +250,18 @@ function UserAccountListing() {
                 open={createDialogOpen}
                 onClose={() => setCreateDialogOpen(false)}
                 onUserCreated={async () => {
+                    await refetch();
+                }}
+            />
+
+            <AdjustPointsDialog
+                open={adjustmentUser !== null}
+                username={adjustmentUser?.username ?? null}
+                currentBalance={
+                    adjustmentUser?.loyaltypointbalance ?? null
+                }
+                onClose={() => setAdjustmentUser(null)}
+                onPointsAdjusted={async () => {
                     await refetch();
                 }}
             />

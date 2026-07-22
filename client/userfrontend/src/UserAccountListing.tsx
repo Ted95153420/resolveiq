@@ -1,6 +1,7 @@
 import { Fragment, useState } from "react";
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
+import type { Transaction } from "./components/transactions/transactionTypes";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -42,15 +43,6 @@ const QUERY_ALL_USERS = gql`
     }
 `;
 
-type Transaction = {
-    id: string;
-    transactioncode: "TRAN" | "ADJ";
-    gametype: string | null;
-    amountwagered: number | null;
-    points_delta: number;
-    adjustment_reason: string | null;
-    transaction_timestamp: string;
-};
 
 type User = {
     id: number;

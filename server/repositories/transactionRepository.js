@@ -29,7 +29,14 @@ async function addTransaction(newTransaction) {
 
 async function getTransactionsByUserId(userId) {
     const result = await pool.query(`
-        SELECT id, user_id, gametype, amountwagered, transaction_timestamp
+        SELECT id, 
+               user_id, 
+               transactioncode,
+               gametype, 
+               amountwagered, 
+               points_delta,
+               adjustment_reason,
+               transaction_timestamp
         FROM transactions
         WHERE user_id = $1
         ORDER BY transaction_timestamp DESC

@@ -31,8 +31,11 @@ const QUERY_ALL_USERS = gql`
             loyaltypointbalance
             transactions {
                 id
+                transactioncode
                 gametype
                 amountwagered
+                points_delta
+                adjustment_reason
                 transaction_timestamp
             }
         }
@@ -103,7 +106,7 @@ function UserAccountListing() {
                 }}
             >
                 <Typography color="error">
-                    Error loading users.
+                    Error loading users : {error.message}
                 </Typography>
             </Box>
         );

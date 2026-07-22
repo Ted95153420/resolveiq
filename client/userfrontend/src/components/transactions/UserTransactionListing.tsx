@@ -6,34 +6,14 @@ import ListItem from "@mui/material/ListItem";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import type { Transaction } from "./transactionTypes";
+import { formatCurrency, formatPointsDelta, formatDate } from "./transactionFormatters";
 
 
 type UserTransactionListingProps = {
     transactions: Transaction[];
 };
 
-function formatCurrency(amount: number) {
-    return new Intl.NumberFormat("en-CA", {
-        style: "currency",
-        currency: "CAD",
-    }).format(amount);
-}
 
-function formatDate(timestamp: string) {
-    return new Date(timestamp).toLocaleString("en-CA", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-    });
-}
-
-function formatPointsDelta(pointsDelta: number) {
-    return pointsDelta > 0
-        ? `+${pointsDelta} points`
-        : `${pointsDelta} points`;
-}
 
 function UserTransactionListing({ transactions }: UserTransactionListingProps) {
     if (!transactions || transactions.length === 0) {

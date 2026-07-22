@@ -18,6 +18,10 @@ const {
     getTransactionsByUserId,
 } = require("../repositories/transactionRepository");
 
+const {
+    adjustPoints,
+} = require("../services/pointsAdjustmentService");
+
 const resolvers = {
     Query: {
         users: async () => {
@@ -52,6 +56,18 @@ const resolvers = {
             throw error;
         }
     },
+
+        adjustPoints: async (_, { input }) => {
+            try {
+                return await adjustPoints(input);
+            } catch (error) {
+                throw new GraphQLError(error.message, {
+                    extensions: {
+                        code: "BAD_USER_INPUT",
+                    },
+                });
+            }
+        },
 
         updateUserName: async (parent, args) => {
             const { id, newUserName } = args.input;

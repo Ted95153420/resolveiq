@@ -4,7 +4,6 @@ import { useQuery } from "@apollo/client/react";
 import type { Transaction } from "../transactions/transactionTypes";
 
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -15,11 +14,10 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-
 import CreateUserDialog from "./CreateUserDialog";
 import { ExpandButton } from "./ExpandButton";
 import UserTransactionListing from "../transactions/UserTransactionListing";
+import UserAccountHeader from "./UserAccountHeader";
 
 const QUERY_ALL_USERS = gql`
     query GetAllUsers {
@@ -120,70 +118,9 @@ function UserAccountListing() {
                     overflow: "hidden",
                 }}
             >
-                <Box
-                    sx={{
-                        position: "relative",
-                        px: 3,
-                        py: 3,
-                        background:
-                            "linear-gradient(90deg, #0f172a 0%, #1e3a8a 100%)",
-                        color: "white",
-                        display: "flex",
-                        flexDirection: {
-                            xs: "column",
-                            md: "row",
-                        },
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 2,
-                    }}
-                >
-                    <Box sx={{ textAlign: "center" }}>
-                        <Typography
-                            variant="h4"
-                            sx={{
-                                fontWeight: 700,
-                                color: "white",
-                                letterSpacing: "0.5px",
-                            }}
-                        >
-                            Player Loyalty Overview
-                        </Typography>
-
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                mt: 0.5,
-                                color: "rgba(255, 255, 255, 0.72)",
-                            }}
-                        >
-                            Manage users, balances and recent activity.
-                        </Typography>
-                    </Box>
-
-                    <Button
-                        variant="contained"
-                        startIcon={<PersonAddAlt1Icon />}
-                        onClick={() => setCreateDialogOpen(true)}
-                        sx={{
-                            position: {
-                                xs: "static",
-                                md: "absolute",
-                            },
-                            right: {
-                                md: 24,
-                            },
-                            backgroundColor: "white",
-                            color: "#1e3a8a",
-                            fontWeight: 700,
-                            "&:hover": {
-                                backgroundColor: "#eff6ff",
-                            },
-                        }}
-                    >
-                        Create User
-                    </Button>
-                </Box>
+                <UserAccountHeader
+                    onCreateUser={() => setCreateDialogOpen(true)}
+                />
 
                 <Table>
                     <TableHead>

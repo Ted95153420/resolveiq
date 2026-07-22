@@ -19,7 +19,7 @@ import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 
 import CreateUserDialog from "./CreateUserDialog";
 import { ExpandButton } from "./ExpandButton";
-import UserTransactionListing from "./UserTransactionListing";
+import UserTransactionListing from "./components/transactions/UserTransactionListing";
 
 const QUERY_ALL_USERS = gql`
     query GetAllUsers {

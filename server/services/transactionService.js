@@ -5,6 +5,9 @@ const {
     recordProcessedEvent,
 } = require("../repositories/processedEventRepository");
 const { applyTransactionToLoyalty, calculatePointsFromAmount } = require("./loyaltyService");
+const {
+    validateIncomingTransaction,
+} = require("../validators/transactionValidator");
 
 async function createTransaction(event) {
     const { eventId, eventType, payload } = event;
@@ -14,6 +17,8 @@ async function createTransaction(event) {
     if (alreadyProcessed) {
         return null;
     }
+
+    validateIncomingTransaction(payload);
 
     const existingUser = await getUserByUsername(payload.username);
 

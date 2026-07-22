@@ -37,6 +37,12 @@ function formatDate(timestamp: string) {
     });
 }
 
+function formatPointsDelta(pointsDelta: number) {
+    return pointsDelta > 0
+        ? `+${pointsDelta} points`
+        : `${pointsDelta} points`;
+}
+
 function UserTransactionListing({ transactions }: UserTransactionListingProps) {
     if (!transactions || transactions.length === 0) {
         return (
@@ -88,79 +94,165 @@ function UserTransactionListing({ transactions }: UserTransactionListingProps) {
             </Box>
 
             <List disablePadding>
-                {transactions.map((transaction, index) => (
-                    <Box key={transaction.id}>
-                        <ListItem
-                            sx={{
-                                px: 2,
-                                py: 1.5,
-                                display: "block",
-                                backgroundColor: index % 2 === 0 ? "#ffffff" : "#f8fbff",
-                            }}
-                        >
-                            <Box
+                {transactions.map((transaction, index) => {
+                    const isAdjustment =
+                        transaction.transactioncode === "ADJ";
+
+                    return (
+                        <Box key={transaction.id}>
+                            <ListItem
                                 sx={{
-                                    display: "flex",
-                                    flexDirection: { xs: "column", md: "row" },
-                                    justifyContent: "space-between",
-                                    alignItems: { xs: "flex-start", md: "center" },
-                                    gap: 2,
+                                    px: 2,
+                                    py: 1.5,
+                                    display: "block",
+                                    backgroundColor:
+                                        index % 2 === 0
+                                            ? "#ffffff"
+                                            : "#f8fbff",
                                 }}
                             >
-                                <Box>
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 1,
-                                            mb: 0.5,
-                                        }}
-                                    >
-                                        <Typography sx={{ fontWeight: 700, color: "#0f172a" }}>
-                                            {transaction.gametype}
-                                        </Typography>
-                                        <Chip
-                                            label={`Txn ${transaction.id}`}
-                                            size="small"
-                                            sx={{
-                                                backgroundColor: "#e8eef7",
-                                                color: "#334155",
-                                                fontWeight: 600,
-                                            }}
-                                        />
-                                    </Box>
-
-                                    <Typography variant="body2" sx={{ color: "#64748b" }}>
-                                        {formatDate(transaction.transaction_timestamp)}
-                                    </Typography>
-                                </Box>
-
-                                <Typography
+                                <Box
                                     sx={{
-                                        fontWeight: 800,
-                                        fontSize: "1rem",
-                                        color: "#1565c0",
-                                        whiteSpace: "nowrap",
+                                        display: "flex",
+                                        flexDirection: {
+                                            xs: "column",
+                                            md: "row",
+                                        },
+                                        justifyContent: "space-between",
+                                        alignItems: {
+                                            xs: "flex-start",
+                                            md: "center",
+                                        },
+                                        gap: 2,
                                     }}
                                 >
-                                    {transaction.transactioncode === "TRAN" &&
-                                        transaction.amountwagered !== null && (
+                                    <Box>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                flexWrap: "wrap",
+                                                gap: 1,
+                                                mb: 0.5,
+                                            }}
+                                        >
                                             <Typography
                                                 sx={{
                                                     fontWeight: 700,
-                                                    color: "#1565c0",
+                                                    color: "#0f172a",
                                                 }}
                                             >
-                                                {formatCurrency(transaction.amountwagered)}
+                                                {isAdjustment
+                                                    ? "Points Adjustment"
+                                                    : transaction.gametype}
                                             </Typography>
-                                        )}
-                                </Typography>
-                            </Box>
-                        </ListItem>
 
-                        {index < transactions.length - 1 && <Divider />}
-                    </Box>
-                ))}
+                                            <Chip
+                                                label={
+                                                    transaction.transactioncode
+                                                }
+                                                size="small"
+                                                sx={{
+                                                    backgroundColor:
+                                                        isAdjustment
+                                                            ? "#fff3e0"
+                                                            : "#e8eef7",
+                                                    color: isAdjustment
+                                                        ? "#b45309"
+                                                        : "#334155",
+                                                    fontWeight: 700,
+                                                }}
+                                            />
+
+                                            <Chip
+                                                label={`Txn ${transaction.id}`}
+                                                size="small"
+                                                sx={{
+                                                    backgroundColor: "#e8eef7",
+                                                    color: "#334155",
+                                                    fontWeight: 600,
+                                                }}
+                                            />
+                                        </Box>
+
+                                        {isAdjustment &&
+                                            transaction.adjustment_reason && (
+                                                <Typography
+                                                    variant="body2"
+                                                    sx={{
+                                                        color: "#334155",
+                                                        mb: 0.5,
+                                                    }}
+                                                >
+                                                    {
+                                                        transaction.adjustment_reason
+                                                    }
+                                                </Typography>
+                                            )}
+
+                                        <Typography
+                                            variant="body2"
+                                            sx={{
+                                                color: "#64748b",
+                                            }}
+                                        >
+                                            {formatDate(
+                                                transaction.transaction_timestamp
+                                            )}
+                                        </Typography>
+                                    </Box>
+
+                                    <Box
+                                        sx={{
+                                            textAlign: {
+                                                xs: "left",
+                                                md: "right",
+                                            },
+                                            whiteSpace: "nowrap",
+                                        }}
+                                    >
+                                        {isAdjustment ? (
+                                            <Typography
+                                                sx={{
+                                                    fontWeight: 800,
+                                                    fontSize: "1rem",
+                                                    color:
+                                                        transaction.points_delta >
+                                                            0
+                                                            ? "#1565c0"
+                                                            : "#c62828",
+                                                }}
+                                            >
+                                                {formatPointsDelta(
+                                                    transaction.points_delta
+                                                )}
+                                            </Typography>
+                                        ) : (
+                                            transaction.amountwagered !==
+                                            null && (
+                                                <Typography
+                                                    sx={{
+                                                        fontWeight: 800,
+                                                        fontSize: "1rem",
+                                                        color: "#1565c0",
+                                                    }}
+                                                >
+                                                    {formatCurrency(
+                                                        transaction.amountwagered
+                                                    )}
+                                                </Typography>
+                                            )
+                                        )}
+                                    </Box>
+                                </Box>
+                            </ListItem>
+
+                            {index < transactions.length - 1 && (
+                                <Divider />
+                            )}
+                        </Box>
+                    );
+                })}   
             </List>
         </Paper>
     );

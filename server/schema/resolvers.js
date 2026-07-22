@@ -39,6 +39,7 @@ const resolvers = {
         },
     },
 
+
     Mutation: {
         createUser: async (parent, args) => {
         try {
@@ -77,6 +78,30 @@ const resolvers = {
         deleteUser: async (parent, args) => {
             return await deleteUser(args.id);
         }
+    },
+
+    Transaction: {
+        transaction_timestamp: (transaction) => {
+            const timestamp = transaction.transaction_timestamp;
+
+            if (timestamp instanceof Date) {
+                return timestamp.toISOString();
+            }
+
+            const parsedTimestamp =
+                typeof timestamp === "string" &&
+                    /^\d+$/.test(timestamp)
+                    ? new Date(Number(timestamp))
+                    : new Date(timestamp);
+
+            if (Number.isNaN(parsedTimestamp.getTime())) {
+                throw new Error(
+                    `Invalid transaction timestamp: ${timestamp}`
+                );
+            }
+
+            return parsedTimestamp.toISOString();
+        },
     },
 };
 

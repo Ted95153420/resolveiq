@@ -1,7 +1,7 @@
 import { Fragment, useState } from "react";
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
-import type { Transaction } from "./components/transactions/transactionTypes";
+import type { Transaction } from "../transactions/transactionTypes";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -19,7 +19,7 @@ import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 
 import CreateUserDialog from "./CreateUserDialog";
 import { ExpandButton } from "./ExpandButton";
-import UserTransactionListing from "./components/transactions/UserTransactionListing";
+import UserTransactionListing from "../transactions/UserTransactionListing";
 
 const QUERY_ALL_USERS = gql`
     query GetAllUsers {

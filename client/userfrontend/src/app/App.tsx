@@ -1,7 +1,7 @@
 import './App.css'
 import { ApolloProvider } from '@apollo/client/react';
 import { ApolloClient, InMemoryCache, HttpLink} from '@apollo/client';
-import UserAccountListing from './components/users/UserAccountListing';
+import UserAccountListing from '../features/dashboard/pages/UserAccountListing';
 
 
 function App() { 

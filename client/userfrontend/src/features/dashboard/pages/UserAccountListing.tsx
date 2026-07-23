@@ -1,9 +1,9 @@
 import { Fragment, useState } from "react";
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
-import type { Transaction } from "../transactions/transactionTypes";
-import AdjustPointsButton from "../pointadjustments/AdjustPointsButton";
-import AdjustPointsDialog from "../pointadjustments/AdjustPointsDialog";
+import type { Transaction } from "../components/transactions/transactionTypes";
+import AdjustPointsButton from "../components/pointadjustments/AdjustPointsButton";
+import AdjustPointsDialog from "../components/pointadjustments/AdjustPointsDialog";
 
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -16,10 +16,10 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
-import CreateUserDialog from "./CreateUserDialog";
-import { ExpandButton } from "./ExpandButton";
-import UserTransactionListing from "../transactions/UserTransactionListing";
-import UserAccountHeader from "./UserAccountHeader";
+import CreateUserDialog from "../components/users/CreateUserDialog";
+import { ExpandButton } from "../components/users/ExpandButton";
+import UserTransactionListing from "../components/transactions/UserTransactionListing";
+import UserAccountHeader from "../components/users/UserAccountHeader";
 
 
 const QUERY_ALL_USERS = gql`

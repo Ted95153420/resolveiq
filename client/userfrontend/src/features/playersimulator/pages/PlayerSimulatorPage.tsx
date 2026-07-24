@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 
 import DemoModeBanner from "../components/DemoModeBanner";
 import PlayerSelector from "../components/PlayerSelector";
+import SelectedPlayerSummary from "../components/SelectedPlayerSummary";
 
 import { PLAYER_CHOICES_QUERY } from "../graphql/playerQueries";
 
@@ -97,43 +98,9 @@ function PlayerSimulatorPage() {
                 </Paper>
 
                 {selectedPlayer && (
-                    <Paper
-                        elevation={1}
-                        sx={{
-                            p: 3,
-                            borderRadius: 3,
-                            border: "1px solid #dbe7f3",
-                        }}
-                    >
-                        <Typography
-                            variant="overline"
-                            sx={{
-                                color: "#64748b",
-                            }}
-                        >
-                            Currently viewing as
-                        </Typography>
-
-                        <Typography
-                            variant="h5"
-                            sx={{
-                                fontWeight: 700,
-                                color: "#0f172a",
-                            }}
-                        >
-                            {selectedPlayer.name}
-                        </Typography>
-
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                color: "#64748b",
-                            }}
-                        >
-                            Username:{" "}
-                            {selectedPlayer.username}
-                        </Typography>
-                    </Paper>
+                    <SelectedPlayerSummary
+                        player={selectedPlayer}
+                    />
                 )}
             </Box>
         </Box>

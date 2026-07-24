@@ -1,28 +1,29 @@
-const { GraphQLError } = require("graphql");
 const {
-    DuplicateUsernameError,
-} = require("../../errors/DuplicateUsernameError");
-
-const { 
-    createUserFromDashboard,
-} = require("../../services/userService");
-
-const { 
-    getUsers, 
-    getUserById, 
-    updateUserName, 
-    deleteUser 
+    getUsers,
+    getUserById,
+    updateUserName,
+    deleteUser,
 } = require("../../repositories/userRepository");
 
-const { 
+const {
     getTransactionsByUserId,
 } = require("../../repositories/transactionRepository");
+
+const {
+    createUserFromDashboard,
+} = require("../../services/userService");
 
 const {
     adjustPoints,
 } = require("../../services/pointsAdjustmentService");
 
-const resolvers = {
+const {
+    DuplicateUsernameError,
+} = require("../../errors/DuplicateUsernameError");
+
+
+
+const dashboardResolvers = {
     Query: {
         users: async () => {
             return await getUsers();
@@ -105,4 +106,4 @@ const resolvers = {
     },
 };
 
-module.exports = { resolvers };
+module.exports = { dashboardResolvers };

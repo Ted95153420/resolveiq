@@ -1,14 +1,19 @@
 const { ApolloServer } = require("@apollo/server");
-const { startStandaloneServer } = require("@apollo/server/standalone");
-const {typeDefs } = require('./graphql/schema/dashboardTypeDefs.js') 
-const { resolvers } = require('./graphql/schema/dashboardResolvers.js');
+const {
+    startStandaloneServer,
+} = require("@apollo/server/standalone");
+
+const {
+    typeDefs,
+    resolvers,
+} = require("./graphql");
+
+const port = Number(process.env.PORT) || 4000;
 
 const server = new ApolloServer({
     typeDefs,
     resolvers,
 });
-
-const port = process.env.PORT || 4000;
 
 async function startServer() {
     const { url } = await startStandaloneServer(server, {

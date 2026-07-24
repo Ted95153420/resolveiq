@@ -1,5 +1,8 @@
+import Divider from "@mui/material/Divider";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
+
+import SelectedPlayerPointsTotal from "./SelectedPlayerPointsTotal";
 
 import type { PlayerChoice } from "../types/playerTypes";
 
@@ -20,32 +23,26 @@ function SelectedPlayerSummary({
             }}
         >
             <Typography
-                variant="overline"
-                sx={{
-                    color: "#64748b",
-                }}
-            >
-                Currently viewing as
-            </Typography>
-
-            <Typography
                 variant="h5"
                 sx={{
                     fontWeight: 700,
                     color: "#0f172a",
                 }}
             >
-                {player.name}
+                Currently Viewing as {player.name} (
+                Username : {player.username})
             </Typography>
 
-            <Typography
-                variant="body2"
+            <Divider
                 sx={{
-                    color: "#64748b",
+                    my: 3,
                 }}
-            >
-                Username: {player.username}
-            </Typography>
+            />
+
+            <SelectedPlayerPointsTotal
+                pointsBalance={player.loyaltypointbalance}
+            />
+            
         </Paper>
     );
 }

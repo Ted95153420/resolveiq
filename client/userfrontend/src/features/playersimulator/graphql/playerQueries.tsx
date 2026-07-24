@@ -6,6 +6,7 @@ export const PLAYER_CHOICES_QUERY = gql`
             id
             name
             username
+            loyaltypointbalance
         }
     }
 `;

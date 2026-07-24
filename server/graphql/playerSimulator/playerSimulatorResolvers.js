@@ -11,6 +11,7 @@ const playerSimulatorResolvers = {
                 id: user.id,
                 name: user.name,
                 username: user.username,
+                loyaltypointbalance: user.loyaltypointbalance,
             }));
         },
     },

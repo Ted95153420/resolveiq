@@ -3,6 +3,7 @@ const playerSimulatorTypeDefs = `#graphql
         id: Int!
         name: String!
         username: String!
+        loyaltypointbalance: Int!
     }
 
     extend type Query {

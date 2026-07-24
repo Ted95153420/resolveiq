@@ -1,26 +1,26 @@
 const { GraphQLError } = require("graphql");
 const {
     DuplicateUsernameError,
-} = require("../errors/DuplicateUsernameError");
+} = require("../../errors/DuplicateUsernameError");
 
 const { 
     createUserFromDashboard,
-} = require("../services/userService");
+} = require("../../services/userService");
 
 const { 
     getUsers, 
     getUserById, 
     updateUserName, 
     deleteUser 
-} = require("../repositories/userRepository");
+} = require("../../repositories/userRepository");
 
 const { 
     getTransactionsByUserId,
-} = require("../repositories/transactionRepository");
+} = require("../../repositories/transactionRepository");
 
 const {
     adjustPoints,
-} = require("../services/pointsAdjustmentService");
+} = require("../../services/pointsAdjustmentService");
 
 const resolvers = {
     Query: {

@@ -1,5 +1,16 @@
-import { useState } from "react";
-import { useQuery } from "@apollo/client/react";
+import { 
+    useEffect,
+    useState 
+} from "react";
+
+import { 
+    useQuery, 
+    useSubscription 
+} from "@apollo/client/react";
+
+import {
+    PLAYER_BALANCE_UPDATED_SUBSCRIPTION,
+} from "../graphql/playerSubscriptions";
 
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
@@ -18,6 +29,17 @@ type PlayerChoicesData = {
     playerChoices: PlayerChoice[];
 };
 
+type PlayerBalanceUpdatedData = {
+    playerBalanceUpdated: {
+        username: string;
+        loyaltypointbalance: number;
+    };
+};
+
+type PlayerBalanceUpdatedVariables = {
+    username: string;
+};
+
 function PlayerSimulatorPage() {
     const [selectedPlayer, setSelectedPlayer] =
         useState<PlayerChoice | null>(null);
@@ -26,6 +48,33 @@ function PlayerSimulatorPage() {
         useQuery<PlayerChoicesData>(
             PLAYER_CHOICES_QUERY
         );
+
+    const {
+        data: balanceUpdateData,
+        error: balanceSubscriptionError,
+} = useSubscription<
+    PlayerBalanceUpdatedData,
+    PlayerBalanceUpdatedVariables
+>(
+    PLAYER_BALANCE_UPDATED_SUBSCRIPTION,
+    {
+        variables: {
+            username: selectedPlayer?.username ?? "",
+        },
+        skip: selectedPlayer === null,
+    }
+);
+
+    useEffect(() => {
+    if (!balanceUpdateData) {
+        return;
+    }
+
+    console.log(
+        "Player balance subscription update:",
+        balanceUpdateData.playerBalanceUpdated
+    );
+}, [balanceUpdateData]);
 
     return (
         <Box
@@ -46,6 +95,13 @@ function PlayerSimulatorPage() {
                 }}
             >
                 <DemoModeBanner />
+
+                {balanceSubscriptionError && (
+                    <Alert severity="error">
+                        Subscription error:{" "}
+                        {balanceSubscriptionError.message}
+                     </Alert>
+                )}
 
                 <Paper
                     elevation={3}

@@ -8,10 +8,12 @@ import type { PlayerChoice } from "../types/playerTypes";
 
 type SelectedPlayerSummaryProps = {
     player: PlayerChoice;
+    pointsBalance: number;
 };
 
 function SelectedPlayerSummary({
     player,
+    pointsBalance,
 }: SelectedPlayerSummaryProps) {
     return (
         <Paper
@@ -40,7 +42,7 @@ function SelectedPlayerSummary({
             />
 
             <SelectedPlayerPointsTotal
-                pointsBalance={player.loyaltypointbalance}
+                pointsBalance={pointsBalance}
             />
             
         </Paper>

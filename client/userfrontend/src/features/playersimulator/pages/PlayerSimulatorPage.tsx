@@ -74,7 +74,22 @@ function PlayerSimulatorPage() {
         "Player balance subscription update:",
         balanceUpdateData.playerBalanceUpdated
     );
+
 }, [balanceUpdateData]);
+
+    const balanceUpdate =
+    balanceUpdateData?.playerBalanceUpdated;
+
+    let displayedPointsBalance =
+    selectedPlayer?.loyaltypointbalance;
+
+    if (
+        balanceUpdate &&
+        selectedPlayer &&
+        balanceUpdate.username === selectedPlayer.username
+    ) {
+        displayedPointsBalance = balanceUpdate.loyaltypointbalance;
+    }
 
     return (
         <Box
@@ -153,10 +168,11 @@ function PlayerSimulatorPage() {
                     )}
                 </Paper>
 
-                {selectedPlayer && (
+                {selectedPlayer && displayedPointsBalance !== undefined && (
                     <SelectedPlayerSummary
                         player={selectedPlayer}
-                    />
+                        pointsBalance={displayedPointsBalance}
+                        />
                 )}
             </Box>
         </Box>

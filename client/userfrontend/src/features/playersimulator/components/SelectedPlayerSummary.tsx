@@ -1,7 +1,8 @@
 import Divider from "@mui/material/Divider";
 import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
 
+
+import SelectedPlayerIdentity from "./SelectedPlayerIdentity";
 import SelectedPlayerPointsTotal from "./SelectedPlayerPointsTotal";
 
 import type { PlayerChoice } from "../types/playerTypes";
@@ -24,22 +25,12 @@ function SelectedPlayerSummary({
                 border: "1px solid #dbe7f3",
             }}
         >
-            <Typography
-                variant="h5"
-                sx={{
-                    fontWeight: 700,
-                    color: "#0f172a",
-                }}
-            >
-                Currently Viewing as {player.name} (
-                Username : {player.username})
-            </Typography>
-
-            <Divider
-                sx={{
-                    my: 3,
-                }}
+            <SelectedPlayerIdentity
+                name={player.name}
+                username={player.username}
             />
+
+            <Divider sx={{ my: 3 }} />
 
             <SelectedPlayerPointsTotal
                 pointsBalance={pointsBalance}

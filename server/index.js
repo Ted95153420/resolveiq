@@ -18,6 +18,14 @@ const {
     schema,
 } = require("./graphql");
 
+const {
+    WebSocketServer,
+} = require("ws");
+
+const {
+    useServer,
+} = require("graphql-ws/use/ws");
+
 const port = Number(process.env.PORT) || 4000;
 
 async function startServer() {
@@ -29,6 +37,18 @@ async function startServer() {
      */
     const httpServer = http.createServer(app);
 
+    const wsServer = new WebSocketServer({
+        server: httpServer,
+        path: "/graphql",
+    });
+
+    const wsServerCleanup = useServer(
+        {
+            schema,
+        },
+        wsServer
+    );
+
     const server = new ApolloServer({
         schema,
 
@@ -36,6 +56,16 @@ async function startServer() {
             ApolloServerPluginDrainHttpServer({
                 httpServer,
             }),
+
+            {
+                async serverWillStart() {
+                    return {
+                        async drainServer() {
+                            await wsServerCleanup.dispose();
+                        },
+                    };
+                },
+            },
         ],
     });
 
@@ -63,6 +93,10 @@ async function startServer() {
 
     console.log(
         `GraphQL API running at http://localhost:${port}/graphql`
+    );
+
+    console.log(
+        `GraphQL subscriptions running at ws://localhost:${port}/graphql`
     );
 }
 

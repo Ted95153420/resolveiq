@@ -1,4 +1,8 @@
 const {
+    publishPlayerBalanceUpdated,
+} = require("../events/playerBalanceEvents");
+
+const {
     validateIncomingTransaction,
 } = require("../validators/transactionValidator");
 
@@ -28,11 +32,15 @@ async function adjustPoints(input) {
         );
     }
 
-    return applyPointsAdjustment({
+    const result = await applyPointsAdjustment({
         userId: existingUser.id,
         pointsDelta: input.pointsDelta,
         adjustmentReason: input.reason.trim(),
     });
+
+    await publishPlayerBalanceUpdated(result.user);
+
+    return result;
 }
 
 module.exports = {

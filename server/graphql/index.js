@@ -35,6 +35,10 @@ const resolvers = {
         ...playerSimulatorResolvers.Mutation,
     },
 
+    Subscription: {
+        ...playerSimulatorResolvers.Subscription,
+    },
+
     User: {
         ...dashboardResolvers.User,
     },

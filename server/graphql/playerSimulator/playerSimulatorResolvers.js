@@ -2,6 +2,11 @@ const {
     getUsers,
 } = require("../../repositories/userRepository");
 
+const {
+    pubsub,
+    getPlayerBalanceTopic,
+} = require("../../events/playerBalanceEvents");
+
 const playerSimulatorResolvers = {
     Query: {
         playerChoices: async () => {
@@ -13,6 +18,16 @@ const playerSimulatorResolvers = {
                 username: user.username,
                 loyaltypointbalance: user.loyaltypointbalance,
             }));
+        },
+    },
+
+    Subscription: {
+        playerBalanceUpdated: {
+            subscribe: (_, { username }) => {
+                return pubsub.asyncIterableIterator(
+                    getPlayerBalanceTopic(username)
+                );
+            },
         },
     },
 };

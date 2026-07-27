@@ -6,8 +6,19 @@ const playerSimulatorTypeDefs = `#graphql
         loyaltypointbalance: Int!
     }
 
+    type PlayerBalanceUpdate {
+        username: String!
+        loyaltypointbalance: Int!
+    }
+
     extend type Query {
         playerChoices: [PlayerChoice!]!
+    }
+
+    extend type Subscription {
+        playerBalanceUpdated(
+            username: String!
+        ): PlayerBalanceUpdate!
     }
 `;
 

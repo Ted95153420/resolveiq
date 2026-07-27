@@ -1,5 +1,9 @@
 const baseTypeDefs = `#graphql
 
+type Query
+type Mutation
+type Subscription
+
  enum TransactionCode {
      TRAN
      ADJ
@@ -41,9 +45,6 @@ enum Nationality {
     UNITED_KINGDOM
     UNITED_STATES
 }
-
-type Query
-type Mutation
 
 `;
 

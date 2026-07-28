@@ -6,6 +6,7 @@ import {
 } from "@apollo/client/react";
 
 import {
+    PLAYER_ACCOUNT_QUERY,
     PLAYER_CHOICES_QUERY,
 } from "../graphql/playerQueries";
 
@@ -21,6 +22,14 @@ type PlayerChoicesData = {
     playerChoices: PlayerChoice[];
 };
 
+type PlayerAccountData = {
+    playerAccount: PlayerChoice | null;
+};
+
+type PlayerAccountVariables = {
+    username: string;
+};
+
 type PlayerBalanceUpdatedData = {
     playerBalanceUpdated: {
         username: string;
@@ -33,10 +42,10 @@ type PlayerBalanceUpdatedVariables = {
 };
 
 function getDisplayedPointsBalance(
-    selectedPlayer: PlayerChoice | null,
+    playerAccount: PlayerChoice | null,
     balanceUpdateData: PlayerBalanceUpdatedData | undefined
 ): number | undefined {
-    if (!selectedPlayer) {
+    if (!playerAccount) {
         return undefined;
     }
 
@@ -45,12 +54,12 @@ function getDisplayedPointsBalance(
 
     if (
         balanceUpdate &&
-        balanceUpdate.username === selectedPlayer.username
+        balanceUpdate.username === playerAccount.username
     ) {
         return balanceUpdate.loyaltypointbalance;
     }
 
-    return selectedPlayer.loyaltypointbalance;
+    return playerAccount.loyaltypointbalance;
 }
 
 export function usePlayerSimulator() {
@@ -63,6 +72,24 @@ export function usePlayerSimulator() {
         error: playerQueryError,
     } = useQuery<PlayerChoicesData>(
         PLAYER_CHOICES_QUERY
+    );
+
+    const {
+        data: playerAccountData,
+        loading: loadingPlayerAccount,
+        error: playerAccountError,
+    } = useQuery<
+        PlayerAccountData,
+        PlayerAccountVariables
+    >(
+        PLAYER_ACCOUNT_QUERY,
+        {
+            variables: {
+                username: selectedPlayer?.username ?? "",
+            },
+            skip: selectedPlayer === null,
+            fetchPolicy: "network-only",
+        }
     );
 
     const {
@@ -82,9 +109,12 @@ export function usePlayerSimulator() {
         }
     );
 
+    const playerAccount =
+        playerAccountData?.playerAccount ?? null;
+
     const pointsBalance =
         getDisplayedPointsBalance(
-            selectedPlayer,
+            playerAccount,
             balanceUpdateData
         );
 
@@ -92,9 +122,12 @@ export function usePlayerSimulator() {
         players:
             playerChoicesData?.playerChoices ?? [],
         selectedPlayer,
+        playerAccount,
         pointsBalance,
         loadingPlayers,
+        loadingPlayerAccount,
         playerQueryError,
+        playerAccountError,
         subscriptionError,
         selectPlayer: setSelectedPlayer,
     };

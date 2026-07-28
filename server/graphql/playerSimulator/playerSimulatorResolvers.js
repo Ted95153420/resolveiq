@@ -1,5 +1,6 @@
 const {
     getUsers,
+    getUserByUsername,
 } = require("../../repositories/userRepository");
 
 const {
@@ -18,6 +19,10 @@ const playerSimulatorResolvers = {
                 username: user.username,
                 loyaltypointbalance: user.loyaltypointbalance,
             }));
+        },
+
+        playerAccount: async (_, { username }) => {
+            return getUserByUsername(username);
         },
     },
 

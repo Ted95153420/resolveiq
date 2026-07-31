@@ -54,6 +54,13 @@ from a Unix style github prompt. That will get you connected. Once connected
          event_type TEXT NOT NULL,
          processed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
      );   
+
+## How to run Tests
+from the roor folder run   
+either 'npm run test:unit' OR 'npm run test' to run the unit tests.  
+'npm run test:integration' to run the integration tests  
+'npm run test:all' to run integration and unit tests together.  
+
   
 > Investigation-first exception handling for missed loyalty earnings.
 

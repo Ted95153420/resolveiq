@@ -190,7 +190,10 @@
     "jest": "^30.4.2"
   },
   "scripts": {
-    "test": "jest"
+    "test": "npm run test:unit",
+    "test:unit": "jest",
+    "test:integration": "npm --prefix client/userfrontend run test",
+    "test:all": "npm run test:unit && npm run test:integration"
   },
   "repository": {
     "type": "git",

@@ -1,7 +1,16 @@
-async function handlePlayerBalanceUpdatedEvent() {
-    throw new Error(
-        "player.balance.updated event handler not implemented"
-    );
+const {
+    publishPlayerBalanceUpdated,
+} = require("../playerBalanceEvents");
+
+async function handlePlayerBalanceUpdatedEvent(event) {
+    if (event.eventType !== "player.balance.updated") {
+        return;
+    }
+
+    await publishPlayerBalanceUpdated({
+        username: event.payload.username,
+        loyaltypointbalance: event.payload.newBalance,
+    });
 }
 
 module.exports = {

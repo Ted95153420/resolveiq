@@ -11,8 +11,9 @@ async function handleTransactionEvent(event) {
             console.log(`Duplicate or skipped transaction event: ${event.eventId}`);
         }
     }
-
-    console.log(`Unhandled user event type: ${event.eventType}`);
+    else {
+        console.log(`Unhandled user event type: ${event.eventType}`);
+    }
 }
 
 module.exports = { handleTransactionEvent };

@@ -23,7 +23,7 @@ jest.mock(
 );
 
 jest.mock(
-    "../../../streaming/consumer/kafkaConfig",
+    "@resolveiq/kafka",
     () => ({
         buildKafkaConfig: jest.fn(() => ({
             clientId: "resolveiq-player-balance-producer",
@@ -35,7 +35,7 @@ jest.mock(
 const {
     buildKafkaConfig,
 } = require(
-    "../../../streaming/consumer/kafkaConfig"
+    "@resolveiq/kafka"
 );
 
 const {

@@ -23,7 +23,7 @@
 
 require("dotenv").config();
 const { startHttpServer } = require("./startHttpServer");
-const { runConsumer } = require("./runConsumer");
+const { runConsumer } = require("@resolveiq/kafka");
 const { handleUserEvent } = require("./handlers/userEventHandler");
 
 const PORT = process.env.PORT || 10000;

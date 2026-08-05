@@ -3,7 +3,7 @@ const crypto = require("crypto");
 
 const {
     buildKafkaConfig,
-} = require("../kafkaConfig");
+} = require("@resolveiq/kafka");
 
 let producer = null;
 let isConnected = false;

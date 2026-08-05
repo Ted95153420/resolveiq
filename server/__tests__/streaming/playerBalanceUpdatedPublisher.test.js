@@ -63,8 +63,9 @@ describe("publishPlayerBalanceUpdated", () => {
             sourceEventId: "transaction-event-123",
         };
 
-        await publishPlayerBalanceUpdated(
-            balanceUpdate
+        const returnedEvent =
+            await publishPlayerBalanceUpdated(
+                balanceUpdate
         );
 
         expect(

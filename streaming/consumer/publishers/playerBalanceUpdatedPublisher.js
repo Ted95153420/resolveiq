@@ -1,39 +1,86 @@
-const { Kafka } = require("kafkajs");
+const {
+    Kafka,
+} = require("kafkajs");
+
 const crypto = require("crypto");
 
 const {
     buildKafkaConfig,
 } = require("@resolveiq/kafka");
 
-let producer = null;
+const CLIENT_ID =
+    "resolveiq-player-balance-producer";
+
+const TOPIC =
+    "player-balance-events";
+
+let producer;
 let isConnected = false;
+
+function buildPlayerBalanceUpdatedEvent(
+    balanceUpdate
+) {
+    return {
+        eventType:
+            "player.balance.updated",
+
+        eventId:
+            crypto.randomUUID(),
+
+        occurredAt:
+            new Date().toISOString(),
+
+        payload: {
+            username:
+                balanceUpdate.username,
+
+            previousBalance:
+                balanceUpdate.previousBalance,
+
+            newBalance:
+                balanceUpdate.newBalance,
+
+            pointsDelta:
+                balanceUpdate.pointsDelta,
+
+            sourceTransactionId:
+                balanceUpdate.sourceTransactionId,
+
+            sourceEventId:
+                balanceUpdate.sourceEventId,
+        },
+    };
+}
+
+function buildKafkaMessage(event) {
+    return {
+        key: event.payload.username,
+        value: JSON.stringify(event),
+    };
+}
 
 function getProducer() {
     if (producer) {
         return producer;
     }
 
-    const kafkaConfig = buildKafkaConfig(
-        "resolveiq-player-balance-producer"
+    const kafka = new Kafka(
+        buildKafkaConfig(CLIENT_ID)
     );
-
-    const kafka = new Kafka(kafkaConfig);
 
     producer = kafka.producer();
 
     return producer;
 }
 
-async function connectProducer() {
-    const kafkaProducer = getProducer();
+async function getConnectedProducer() {
+    const kafkaProducer =
+        getProducer();
 
-    if (isConnected) {
-        return kafkaProducer;
+    if (!isConnected) {
+        await kafkaProducer.connect();
+        isConnected = true;
     }
-
-    await kafkaProducer.connect();
-
-    isConnected = true;
 
     return kafkaProducer;
 }
@@ -41,37 +88,18 @@ async function connectProducer() {
 async function publishPlayerBalanceUpdated(
     balanceUpdate
 ) {
+    const event =
+        buildPlayerBalanceUpdatedEvent(
+            balanceUpdate
+        );
+
     const kafkaProducer =
-        await connectProducer();
-
-    const event = {
-        eventType: "player.balance.updated",
-        eventId: crypto.randomUUID(),
-        occurredAt: new Date().toISOString(),
-
-        payload: {
-            username: balanceUpdate.username,
-            previousBalance:
-                balanceUpdate.previousBalance,
-            newBalance:
-                balanceUpdate.newBalance,
-            pointsDelta:
-                balanceUpdate.pointsDelta,
-            sourceTransactionId:
-                balanceUpdate.sourceTransactionId,
-            sourceEventId:
-                balanceUpdate.sourceEventId,
-        },
-    };
+        await getConnectedProducer();
 
     await kafkaProducer.send({
-        topic: "player-balance-events",
-
+        topic: TOPIC,
         messages: [
-            {
-                key: balanceUpdate.username,
-                value: JSON.stringify(event),
-            },
+            buildKafkaMessage(event),
         ],
     });
 

@@ -36,8 +36,8 @@ services:
       - "19092:19092"
   api:
     build:
-      context: ./server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: server/Dockerfile
     container_name: resolveiq-api-container
     environment:
       DB_HOST: postgres
@@ -45,6 +45,7 @@ services:
       DB_NAME: resolveiq
       DB_USER: resolveiq_user
       DB_PASSWORD: resolveiq_pass
+      KAFKA_BROKER : redpanda:9092
     ports:
       - "4000:4000"
     depends_on:

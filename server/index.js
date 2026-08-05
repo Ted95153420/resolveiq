@@ -3,6 +3,10 @@ const cors = require("cors");
 const http = require("http");
 
 const {
+    startPlayerBalanceConsumer,
+} = require("./events/startPlayerBalanceConsumer");
+
+const {
     ApolloServer,
 } = require("@apollo/server");
 
@@ -74,6 +78,19 @@ async function startServer() {
      * to expressMiddleware.
      */
     await server.start();
+
+    /*
+    * Start listening for player.balance.updated
+    * Kafka events so they can be forwarded to
+    * GraphQL subscription clients.
+    */
+
+    startPlayerBalanceConsumer().catch((error) => {
+        console.error(
+            "Player balance Kafka consumer failed:",
+            error
+        );
+    });
 
     app.use(
         "/graphql",

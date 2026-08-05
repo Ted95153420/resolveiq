@@ -12,6 +12,7 @@ async function applyTransactionToLoyalty(user, transaction) {
     const updatedUser = await updateUserLoyaltyBalance(user.id, newBalance);
 
     return {
+        previousBalance: currentBalance,
         earnedPoints,
         newBalance,
         updatedUser,

@@ -64,6 +64,7 @@ describe("handleTransactionEvent", () => {
             loyalty: {
                 earnedPoints: 50,
                 newBalance: 1050,
+                previousBalance: 1000,
                 updatedUser: {
                     id: 1,
                     name: "Dan Smith",
@@ -104,6 +105,7 @@ describe("handleTransactionEvent", () => {
             loyalty: {
                 earnedPoints: 50,
                 newBalance: 1050,
+                previousBalance: 1000,
                 updatedUser: {
                     id: 1,
                     name: "Dan Smith",
@@ -181,5 +183,47 @@ describe("handleTransactionEvent", () => {
         expect(
             publishPlayerBalanceUpdated
         ).not.toHaveBeenCalled();
+    });
+
+    it("publishes the previous balance returned by the loyalty service", async () => {
+        createTransaction.mockResolvedValue({
+            transaction: {
+                id: 1001,
+                user_id: 1,
+                transactioncode: "TRAN",
+                gametype: "Slots",
+                amountwagered: 50,
+                points_delta: 50,
+                adjustment_reason: null,
+                transaction_timestamp:
+                    "2026-08-05T18:00:00.000Z",
+            },
+
+            loyalty: {
+                earnedPoints: 50,
+                newBalance: 1050,
+                previousBalance: 1000,
+                updatedUser: {
+                    id: 1,
+                    username: "DSmith",
+                    loyaltypointbalance: 1050,
+                },
+            },
+        });
+
+        await handleTransactionEvent(
+            transactionCreatedEvent
+        );
+
+        expect(
+            publishPlayerBalanceUpdated
+        ).toHaveBeenCalledWith({
+            username: "DSmith",
+            previousBalance: 1000,
+            newBalance: 1050,
+            pointsDelta: 50,
+            sourceTransactionId: 1001,
+            sourceEventId: "event-123",
+        });
     });
 });

@@ -1,13 +1,50 @@
 const {
     createTransaction,
-} = require("../../../server/services/transactionService");
+} = require(
+    "../../../server/services/transactionService"
+);
 
 const {
     publishPlayerBalanceUpdated,
-} = require("../publishers/playerBalanceUpdatedPublisher");
+} = require(
+    "../publishers/playerBalanceUpdatedPublisher"
+);
+
+function buildPlayerBalanceUpdate(
+    event,
+    transactionResult
+) {
+    const {
+        transaction,
+        loyalty,
+    } = transactionResult;
+
+    return {
+        username:
+            loyalty.updatedUser.username,
+
+        previousBalance:
+            loyalty.previousBalance,
+
+        newBalance:
+            loyalty.newBalance,
+
+        pointsDelta:
+            loyalty.earnedPoints,
+
+        sourceTransactionId:
+            transaction.id,
+
+        sourceEventId:
+            event.eventId,
+    };
+}
 
 async function handleTransactionEvent(event) {
-    if (event.eventType !== "transaction.created") {
+    if (
+        event.eventType !==
+        "transaction.created"
+    ) {
         console.log(
             `Unhandled transaction event type: ${event.eventType}`
         );
@@ -15,10 +52,10 @@ async function handleTransactionEvent(event) {
         return;
     }
 
-    const createdTransaction =
+    const transactionResult =
         await createTransaction(event);
 
-    if (!createdTransaction) {
+    if (!transactionResult) {
         console.log(
             `Duplicate or skipped transaction event: ${event.eventId}`
         );
@@ -26,24 +63,20 @@ async function handleTransactionEvent(event) {
         return;
     }
 
-    console.log("Transaction added from event:");
-    console.log(createdTransaction);
+    console.log(
+        "Transaction processed from event:",
+        transactionResult.transaction
+    );
 
-    const {
-        transaction,
-        loyalty,
-    } = createdTransaction;
+    const balanceUpdate =
+        buildPlayerBalanceUpdate(
+            event,
+            transactionResult
+        );
 
-    await publishPlayerBalanceUpdated({
-        username: loyalty.updatedUser.username,
-        previousBalance:
-            loyalty.newBalance -
-            loyalty.earnedPoints,
-        newBalance: loyalty.newBalance,
-        pointsDelta: loyalty.earnedPoints,
-        sourceTransactionId: transaction.id,
-        sourceEventId: event.eventId,
-    });
+    await publishPlayerBalanceUpdated(
+        balanceUpdate
+    );
 }
 
 module.exports = {

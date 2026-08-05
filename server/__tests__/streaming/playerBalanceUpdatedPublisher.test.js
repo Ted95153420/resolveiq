@@ -111,6 +111,10 @@ describe("publishPlayerBalanceUpdated", () => {
         const publishedEvent =
             JSON.parse(publishedMessage.value);
 
+        expect(returnedEvent).toEqual(
+            publishedEvent
+        );
+
         expect(publishedEvent).toEqual({
             eventType: "player.balance.updated",
             eventId: expect.any(String),
